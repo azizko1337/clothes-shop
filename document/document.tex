@@ -1,0 +1,107 @@
+\documentclass[14pt]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper, left=3.7cm, right=3.7cm, top=3cm, bottom=2cm]{geometry}
+\usepackage{indentfirst}
+
+
+\title{Opracowanie i implementacja modułu wykrywania obiektów ze strumieni video w systemie inteligentnego domu}
+\author{Antoni Załupka}
+
+\begin{document}
+	\thispagestyle{empty}
+	
+	\begin{center}
+		\Large{Wydział Nauk Ścisłych i Technicznych}
+	\end{center}
+	
+	\vspace{2cm}
+	
+	\rule{\linewidth}{2mm} 
+	
+	\begin{center}
+		\huge \textbf{Projekt WIG - sklep internetowy z ubraniami} \\
+	\end{center}
+	
+	\rule{\linewidth}{0.5mm} 
+	
+	\vspace{2cm}
+	
+	\begin{center}
+		\Large{Antoni Załupka}
+	\end{center}
+	
+	\vspace{1.5cm}
+	
+	
+	
+	\vspace{8cm}
+	
+	\begin{center}
+		\Large{2025, Uniwersytet Śląski}
+	\end{center}
+	
+	\newpage
+	
+	\section{Wprowadzenie}
+		Jako cel podsięwziąłem stworzenie prostego, lecz trzymającego się konkretnej estetki sklepu internetowego. W sklepie dostępne będą ubrania z podziałem na kolekcje. Sklep będzie odnosił się do pracy licencjackiej, stworzonej na Uniwersytecie Jana Długosza w Częstochowie. Owocem tej pracy są ubrania z własnymi nadrukami, grafiki, szkice, profile na social mediach oraz magazyn modowy w formie pliku pdf. Marka nosi nazwę CHANDRA i cechuje się specyficznym stylem inspirowanym amerykańską kulturą Hip Hop. Moim celem jest stworzenie strony internetowej z funkcją zakupów, przy zachowaniu charakterystycznego stylu CHANDRY. Istniejące projekty ubrań zostaną zmienione w modele 3D, które później zostaną umieszczone na stronie.
+		
+	\section{Opis ogólny}
+		\subsection{Wymagania funkcjonalne}
+		\begin{itemize}
+			\item Przeglądanie produktów przez kolekcje.
+			\item Karta produktu: zdjęcia, wariant (rozmiar/kolor), cena, dostępność, model 3D.
+			\item Koszyk: dodaj/usuń, zmiana ilości, automatyczna suma.
+			\item Zamówienie bez logowania (jako gość).
+			\item Prosty admin panel z podglądem zamówień.
+		\end{itemize}
+
+		\subsection{Wymagania niefunkcjonalne}
+		\begin{itemize}
+			\item Responsywność (mobile-first).
+			\item Podstawowa dostępność: alternatywne teksty, kontrast, obsługa klawiaturą.
+			\item Wydajność: lazy-loading obrazów.
+			\item Publikacja aplikacji w internecie z bezpiecznym protokołem HTTPS.
+		\end{itemize}
+		
+	\section{Schemat podstron}
+		\begin{itemize}
+			\item Strona główna (/)
+			\item Kolekcje (/collections)
+			\begin{itemize}
+				\item Szczegóły kolekcji (/collections/\{slug\})
+				\begin{itemize}
+					\item Produkt (/product/\{slug\})
+				\end{itemize}
+			\end{itemize}
+			\item Zamówienie (bez logowania) (/checkout)
+			\item Admin (/admin)
+			\begin{itemize}
+				\item Zamówienia (/admin/orders)
+				\item Szczegóły zamówienia (/admin/orders/\{id\})
+			\end{itemize}
+			\item O marce (/about)
+			\item Magazyn PDF (/magazine)
+			\item Kontakt (/contact)
+		\end{itemize}
+	
+	\section{Elementy interfejsu webowego}
+		Do tworzenia elementów interfejsu wykorzystam bibliotekę Tailwind CSS, która umożliwia szybkie stylowanie przy pomocy klas.
+		Dodatkowo, proste komponenty UI, takie jak przyciski, formularze czy nawigacja, zostaną zapożyczone jako gotowe komponenty z biblioteki Shadcn UI, opartej również na Tailwind CSS i Radix UI.
+		
+
+	\section{Wykorzystane technologie}
+		\begin{itemize}
+			\item \textbf{Next.js} — framework full‑stack (React, Node).
+			\item \textbf{React} — biblioteka do budowy interfejsu użytkownika w podejściu komponentowym, podstawa Next.js.
+			\item \textbf{Three.js} — renderowanie modeli 3D w przeglądarce za pomocą WebGL.
+			\item \textbf{React Three Fiber} — integracja Three.js z React
+			\item \textbf{Backend w Next.js} — API Routes/Route Handlers i Server Actions do obsługi koszyka, zamówień i panelu admina.
+			\item \textbf{TypeScript} — statyczne typowanie i lepsza jakość kodu.
+			\item \textbf{Tailwind CSS} — szybkie, responsywne stylowanie w podejściu mobile‑first.
+			\item \textbf{SQLite} — lekka relacyjna baza danych (plikowa) na potrzeby projektu.
+		\end{itemize}
+		
+	
+\end{document}
