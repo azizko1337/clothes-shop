@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1761078517.01464 "/home/amtek/Projects/clothes-shop/document/document.tex" "document.pdf" "document" 1761078517.66371 0
+["pdflatex"] 1761079089.94366 "/home/amtek/Projects/clothes-shop/document/document.tex" "document.pdf" "document" 1761079090.59453 0
   "/etc/texmf/web2c/texmf.cnf" 1739658165 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/amtek/Projects/clothes-shop/document/document.tex" 1761078516.41249 4307 138f9a11768a105210b9fccfde680807 ""
+  "/home/amtek/Projects/clothes-shop/document/document.tex" 1761079089.94485 4513 33143e5d0df9b598d5e7c3b7f3ee6e57 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx1440.tfm" 1136768653 3584 13049b61b922a28b158a38aeff75ee9b ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx1728.tfm" 1136768653 3584 ad49a18d8515beef6d92d4d3f197d0fd ""
@@ -50,8 +50,8 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1747148115.45414 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1747148157 8213746 f4dce698be43f7a938247511020142a5 ""
   "chandra-logo.png" 1761078442.59553 681216 4debb80aac9873346517955dda851953 ""
-  "document.aux" 1761078517.62849 1017 04955b4c8cb9e415dd1832e2d889e0f9 "pdflatex"
-  "document.tex" 1761078516.41249 4307 138f9a11768a105210b9fccfde680807 ""
+  "document.aux" 1761079090.55285 1017 04955b4c8cb9e415dd1832e2d889e0f9 "pdflatex"
+  "document.tex" 1761079089.94485 4513 33143e5d0df9b598d5e7c3b7f3ee6e57 ""
   (generated)
   "document.aux"
   "document.log"
