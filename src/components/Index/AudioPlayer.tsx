@@ -1,9 +1,15 @@
 "use client"
 
-import { ExternalLinkIcon } from "@/components/ui/icons/oi-external-link";
+import { FaMusic } from "react-icons/fa6";
+
 import { useRef, useState, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import { MusicalNoteIcon } from "../ui/icons/oi-musical-note";
+import { CiPlay1 } from "react-icons/ci";
+import { CiPause1 } from "react-icons/ci";
+import { FaExternalLinkAlt } from "react-icons/fa";
+
+
 
 function AudioPlayer(){
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -134,8 +140,8 @@ function AudioPlayer(){
 
     return (
         <div className="absolute top-10 right-10 w-64 flex flex-col items-center">
-            <span className="text-foreground italic p-4 font-semibold tracking-wide flex gap-2">
-                Radio <span>CHANDRA</span> <MusicalNoteIcon strokeWidth={0.5} className="scale-125"/>
+            <span className="text-foreground italic font-semibold tracking-wide flex gap-2 items-center pb-1">
+                Radio <span>CHANDRA</span> <FaMusic size={14}/>
             </span>
             <div className={clsx("w-full rounded-md overflow-hidden bg-transparent border border-neutral-700 shadow-inner relative")}>
                 <canvas
@@ -145,23 +151,24 @@ function AudioPlayer(){
                 <div className="absolute top-1 right-2 text-xs px-2 py-0.5 rounded bg-black/40 backdrop-blur-sm tracking-wider">
                     <span>tyle pokus</span> <span className="italic">WAVE</span>
                 </div>
+                <div className="flex gap-2 w-full justify-center p-2">
+                    <button
+                        type="button"
+                        onClick={togglePlay}
+                        aria-pressed={playing}
+                        className="px-4 py-1 rounded-md border text-sm font-medium hover:bg-accent hover:text-accent-foreground transition"
+                    >
+                        {playing ? <CiPause1 /> : <CiPlay1 />}
+                    </button>
+                </div>
             </div>
             <audio ref={audioRef} preload="none">
                 <source src="/audio/tyle-pokus.mp3" type="audio/mpeg" />
             </audio>
-            <div className="flex gap-2">
-                <button
-                    type="button"
-                    onClick={togglePlay}
-                    aria-pressed={playing}
-                    className="px-4 py-1 rounded-md border text-sm font-medium hover:bg-accent hover:text-accent-foreground transition"
-                >
-                    {playing ? "Pause" : "Play"}
-                </button>
-            </div>
+            
             <div className="flex justify-end w-full pt-4 text-">
                 <span className="flex gap-2 pl-7 hover:underline cursor-pointer text-sm text-accent-foreground">
-                    SoundCloud <ExternalLinkIcon size={24} strokeWidth={0.5}/>
+                    SoundCloud <FaExternalLinkAlt size={12}/>
                 </span>
             </div>
             
