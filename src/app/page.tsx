@@ -29,7 +29,7 @@ export default function Home() {
             />
           </div>
 
-          <h1 className="flex gap-2 hover:underline cursor-pointer pl-7 tracking-wide">chandra.movement <ExternalLinkIcon size={38} strokeWidth={0.5}/></h1>
+          <h1 className="flex gap-2 hover:underline cursor-pointer tracking-wide">chandra.movement</h1>
         </div>
 
         <div className="w-20 aspect-square absolute bottom-10 left-1/2 -translate-x-1/2">

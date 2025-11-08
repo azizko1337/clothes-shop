@@ -2,14 +2,17 @@
 
 import { ExternalLinkIcon } from "@/components/ui/icons/oi-external-link";
 import { useRef, useState, useCallback, useEffect } from "react";
+import clsx from "clsx";
+import { MusicalNoteIcon } from "../ui/icons/oi-musical-note";
 
 function AudioPlayer(){
     const audioRef = useRef<HTMLAudioElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const audioCtxRef = useRef<AudioContext | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
-    const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
     const rafRef = useRef<number | null>(null);
+
+    const timeDataRef = useRef<Uint8Array | null>(null);
 
     const [playing, setPlaying] = useState(false);
 
@@ -17,75 +20,78 @@ function AudioPlayer(){
         if (audioCtxRef.current || !audioRef.current) return;
         const ctx = new AudioContext();
         const analyser = ctx.createAnalyser();
-        analyser.fftSize = 256;
+        analyser.fftSize = 1024;
         analyser.smoothingTimeConstant = 0.75;
+
         const src = ctx.createMediaElementSource(audioRef.current);
         src.connect(analyser);
         analyser.connect(ctx.destination);
+
         audioCtxRef.current = ctx;
         analyserRef.current = analyser;
-        sourceRef.current = src;
+        timeDataRef.current = new Uint8Array(analyser.fftSize);
     };
 
     const draw = () => {
         const canvas = canvasRef.current;
         const analyser = analyserRef.current;
-        if (!canvas || !analyser) return;
+        const timeArr = timeDataRef.current;
+        if (!canvas || !analyser || !timeArr) return;
         const ctx2d = canvas.getContext("2d");
         if (!ctx2d) return;
 
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
+        const w = canvas.width;
+        const h = canvas.height;
 
-        ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+        // czyste, przezroczyste tło
+        ctx2d.clearRect(0, 0, w, h);
 
-        analyser.getByteFrequencyData(dataArray);
+        analyser.getByteTimeDomainData(timeArr as unknown as Uint8Array<ArrayBuffer>);
 
-        // Retro gradient background glow
-        const grad = ctx2d.createLinearGradient(0, 0, 0, canvas.height);
-        grad.addColorStop(0, "#120e2a");
-        grad.addColorStop(1, "#1a1738");
-        ctx2d.fillStyle = grad;
-        ctx2d.fillRect(0, 0, canvas.width, canvas.height);
-
-        const barWidth = (canvas.width / bufferLength) * 0.9;
-        for (let i = 0; i < bufferLength; i++) {
-            const value = dataArray[i];
-            const h = (value / 255) * canvas.height * 0.45; // half height (mirror)
-            const x = i * (canvas.width / bufferLength);
-
-            // Color shift
-            const hue = (i / bufferLength) * 260 + (value / 255) * 40;
-            ctx2d.fillStyle = `hsl(${hue},70%,60%)`;
-
-            // Upper bar
-            ctx2d.fillRect(x, canvas.height / 2 - h, barWidth, h);
-            // Lower mirror
-            ctx2d.fillRect(x, canvas.height / 2, barWidth, h);
+        // Wave
+        // kolor lekko pulsuje od RMS sygnału
+        let sum = 0;
+        for (let i=0;i<timeArr.length;i++){
+            const v = (timeArr[i]-128)/128;
+            sum += v*v;
         }
+        const rms = Math.sqrt(sum / timeArr.length);
+        const hue = (rms * 360) % 360;
 
-        // Center line
-        ctx2d.fillStyle = "rgba(255,255,255,0.15)";
-        ctx2d.fillRect(0, canvas.height / 2 - 1, canvas.width, 2);
+        ctx2d.lineWidth = 2;
+        ctx2d.strokeStyle = `hsl(${hue},85%,65%)`;
+        ctx2d.beginPath();
+        for (let i=0;i<timeArr.length;i++){
+            const v = (timeArr[i]-128)/128;
+            const x = (i/(timeArr.length-1))*w;
+            const y = h/2 + v * h * 0.35;
+            if (i===0) ctx2d.moveTo(x,y); else ctx2d.lineTo(x,y);
+        }
+        ctx2d.stroke();
+
+        // delikatna poświata
+        ctx2d.globalCompositeOperation = "lighter";
+        ctx2d.lineWidth = 8;
+        ctx2d.globalAlpha = 0.12;
+        ctx2d.stroke();
+        ctx2d.globalAlpha = 1;
+        ctx2d.globalCompositeOperation = "source-over";
 
         rafRef.current = requestAnimationFrame(draw);
     };
 
     const startViz = () => {
-        if (!analyserRef.current) return;
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
         draw();
     };
 
     const stopViz = () => {
-        if (rafRef.current) {
-            cancelAnimationFrame(rafRef.current);
-            rafRef.current = null;
-        }
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
         const canvas = canvasRef.current;
         if (canvas) {
             const c = canvas.getContext("2d");
-            if (c) c.clearRect(0, 0, canvas.width, canvas.height);
+            if (c) c.clearRect(0,0,canvas.width,canvas.height);
         }
     };
 
@@ -102,16 +108,14 @@ function AudioPlayer(){
               .then(() => {
                   setPlaying(true);
                   startViz();
-                  // Resume audio context if suspended (Chrome policy)
                   if (audioCtxRef.current?.state === "suspended") {
                       audioCtxRef.current.resume();
                   }
               })
-              .catch(() => {});
+              .catch(()=>{});
         }
     }, [playing]);
 
-    // Resize canvas to container size
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -129,30 +133,38 @@ function AudioPlayer(){
     }, []);
 
     return (
-        <div className="absolute top-10 right-10 w-56 flex flex-col items-center gap-3">
-            <span className="text-foreground italic p-4 font-semibold tracking-wide">
-                Radio <span>CHANDRA</span>
+        <div className="absolute top-10 right-10 w-64 flex flex-col items-center">
+            <span className="text-foreground italic p-4 font-semibold tracking-wide flex gap-2">
+                Radio <span>CHANDRA</span> <MusicalNoteIcon strokeWidth={0.5} className="scale-125"/>
             </span>
-            <div className="w-full rounded-md overflow-hidden bg-[#0d0c19] border border-neutral-700 shadow-inner">
+            <div className={clsx("w-full rounded-md overflow-hidden bg-transparent border border-neutral-700 shadow-inner relative")}>
                 <canvas
                     ref={canvasRef}
-                    className={`block w-full h-32 transition-opacity duration-500 ${playing ? 'opacity-100' : 'opacity-30'}`}
+                    className={`block w-full h-40 transition-opacity duration-500 ${playing ? 'opacity-100' : 'opacity-30'}`}
                 />
+                <div className="absolute top-1 right-2 text-xs px-2 py-0.5 rounded bg-black/40 backdrop-blur-sm tracking-wider">
+                    <span>tyle pokus</span> <span className="italic">WAVE</span>
+                </div>
             </div>
             <audio ref={audioRef} preload="none">
                 <source src="/audio/tyle-pokus.mp3" type="audio/mpeg" />
             </audio>
-            <button
-                type="button"
-                onClick={togglePlay}
-                aria-pressed={playing}
-                className="px-4 py-1 rounded-md border text-sm font-medium hover:bg-accent hover:text-accent-foreground transition"
-            >
-                {playing ? "Pause" : "Play"}
-            </button>
-            <span className="flex gap-2 pl-7 hover:underline cursor-pointer">
-                SoundCloud <ExternalLinkIcon size={38} strokeWidth={0.5}/>
-            </span>
+            <div className="flex gap-2">
+                <button
+                    type="button"
+                    onClick={togglePlay}
+                    aria-pressed={playing}
+                    className="px-4 py-1 rounded-md border text-sm font-medium hover:bg-accent hover:text-accent-foreground transition"
+                >
+                    {playing ? "Pause" : "Play"}
+                </button>
+            </div>
+            <div className="flex justify-end w-full pt-4 text-">
+                <span className="flex gap-2 pl-7 hover:underline cursor-pointer text-sm text-accent-foreground">
+                    SoundCloud <ExternalLinkIcon size={24} strokeWidth={0.5}/>
+                </span>
+            </div>
+            
         </div>
     )
 }
