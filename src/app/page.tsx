@@ -7,6 +7,7 @@ import AudioPlayer from "@/components/Index/AudioPlayer";
 import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/Index/ProductCard";
 import CollectionCard from "@/components/Index/CollectionCard";
+import ScrollDownButton from "@/components/Index/ScrollDownButton";
 
 export default async function Home() {
   const latestCollection = await prisma.collection.findFirst({
@@ -46,14 +47,7 @@ export default async function Home() {
           <h1 className="flex gap-2 hover:underline cursor-pointer tracking-wide">chandra.movement</h1>
         </div>
 
-        <div className="w-20 aspect-square absolute bottom-10 left-1/2 -translate-x-1/2">
-          <Image
-            src="/images/scroll-down-mouse.webp"
-            alt="Przesuń w dół"
-            fill={true}
-            className="object-contain"
-          />
-        </div>
+        <ScrollDownButton />
       </div>
 
       <AudioPlayer />
