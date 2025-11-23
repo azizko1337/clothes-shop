@@ -21,6 +21,7 @@ function AudioPlayer(){
     const [volume, setVolume] = useState(0.8);
     const [hoverSeek, setHoverSeek] = useState<number | null>(null);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [iconColor, setIconColor] = useState<string>("");
 
     const setupAnalyzer = () => {
         if (audioCtxRef.current || !audioRef.current) return;
@@ -141,6 +142,20 @@ function AudioPlayer(){
         };
     }, []);
 
+    useEffect(() => {
+        if (!playing) {
+            setIconColor("");
+            return;
+        }
+        const changeColor = () => {
+            const h = Math.floor(Math.random() * 360);
+            setIconColor(`hsl(${h}, 100%, 60%)`);
+        };
+        changeColor();
+        const interval = setInterval(changeColor, 1000);
+        return () => clearInterval(interval);
+    }, [playing]);
+
     // volume binding
     useEffect(() => {
         if (audioRef.current) audioRef.current.volume = volume;
@@ -190,7 +205,14 @@ function AudioPlayer(){
                 )}
                 aria-label="Otwórz odtwarzacz"
             >
-                <FaMusic className={clsx(playing && "animate-spin-slow")} size={20} />
+                <FaMusic 
+                    className={clsx(playing && "animate-spin-slow")} 
+                    size={20} 
+                    style={{ 
+                        color: playing ? iconColor : undefined,
+                        transition: "color 1s ease-in-out"
+                    }}
+                />
             </button>
 
             <div className={clsx(
