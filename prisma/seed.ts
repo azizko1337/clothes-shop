@@ -59,8 +59,14 @@ async function main() {
       },
       images: {
         create: [
-          { url: '/images/tshirt-front.jpg' },
-          { url: '/images/tshirt-back.jpg' },
+          { 
+            data: Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64'),
+            mimeType: 'image/gif'
+          },
+          { 
+            data: Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64'),
+            mimeType: 'image/gif'
+          },
         ],
       },
     },

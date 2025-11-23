@@ -27,34 +27,52 @@ export async function PUT(
   try {
     const { id } = await params;
     const productId = parseInt(id);
-    const body = await request.json();
-    const { name, description, composition, price, collectionId, modelUrl, images, sizes } = body;
+    
+    const formData = await request.formData();
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
+    const composition = formData.get('composition') as string;
+    const price = parseFloat(formData.get('price') as string);
+    const collectionId = parseInt(formData.get('collectionId') as string);
+    const modelUrl = formData.get('modelUrl') as string;
+    const sizes = (formData.get('sizes') as string)?.split(',').map(s => s.trim()).filter(s => s) || [];
+    
+    const imageFile = formData.get('imageFile') as File | null;
+    const modelFile = formData.get('modelFile') as File | null;
 
     // Transaction to ensure consistency
     const updatedProduct = await prisma.$transaction(async (tx) => {
       // Update basic fields
-      const product = await tx.product.update({
-        where: { id: productId },
-        data: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const updateData: any = {
           name,
           description,
           composition,
           price,
           collectionId,
           modelUrl,
-        },
+      };
+
+      if (modelFile) {
+          updateData.modelData = Buffer.from(await modelFile.arrayBuffer());
+          updateData.modelMimeType = modelFile.type;
+      }
+
+      await tx.product.update({
+        where: { id: productId },
+        data: updateData,
       });
 
-      // Update images if provided
-      if (images) {
-        await tx.productImage.deleteMany({
-          where: { productId },
+      // Add new image if provided
+      if (imageFile) {
+        const buffer = Buffer.from(await imageFile.arrayBuffer());
+        await tx.productImage.create({
+            data: {
+                productId,
+                data: buffer,
+                mimeType: imageFile.type
+            }
         });
-        if (images.length > 0) {
-          await tx.productImage.createMany({
-            data: images.map((url: string) => ({ url, productId })),
-          });
-        }
       }
 
       // Update sizes if provided
@@ -72,13 +90,22 @@ export async function PUT(
       return tx.product.findUnique({
         where: { id: productId },
         include: {
-          images: true,
+          images: { select: { id: true } },
           sizes: true,
         },
       });
     });
+    
+    const productWithUrls = {
+        ...updatedProduct,
+        images: updatedProduct?.images.map(img => ({
+            id: img.id,
+            url: `/api/images/${img.id}`
+        })),
+        modelUrl: updatedProduct?.modelData ? `/api/models/${updatedProduct.id}` : updatedProduct?.modelUrl
+    };
 
-    return NextResponse.json(updatedProduct);
+    return NextResponse.json(productWithUrls);
   } catch (error) {
     console.error('Error updating product:', error);
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });

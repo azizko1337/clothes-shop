@@ -36,6 +36,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Pencil, Trash2, LogOut } from 'lucide-react'
 import { Spinner } from "@/components/ui/spinner"
+import { FileUpload } from "@/components/ui/file-upload"
 
 interface Product {
   id: number;
@@ -58,6 +59,8 @@ interface ProductFormData {
   modelUrl: string;
   images: string; // comma separated
   sizes: string; // comma separated
+  imageFile: File | null;
+  modelFile: File | null;
 }
 
 const initialFormData: ProductFormData = {
@@ -69,6 +72,8 @@ const initialFormData: ProductFormData = {
   modelUrl: '',
   images: '',
   sizes: '',
+  imageFile: null,
+  modelFile: null,
 };
 
 interface Collection {
@@ -119,13 +124,14 @@ const initialOrderFormData: OrderFormData = {
 interface ProductFormProps {
   formData: ProductFormData;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  handleFileChange: (file: File | null, field: 'imageFile' | 'modelFile') => void;
   handleSubmit: (e: React.FormEvent) => void;
   loading: boolean;
   collections: Collection[];
   submitLabel: string;
 }
 
-const ProductForm = ({ formData, handleInputChange, handleSubmit, loading, collections, submitLabel }: ProductFormProps) => (
+const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubmit, loading, collections, submitLabel }: ProductFormProps) => (
   <form onSubmit={handleSubmit} className="space-y-4">
     <div className="grid gap-4 py-4">
       <div className="grid grid-cols-4 items-center gap-4">
@@ -161,15 +167,31 @@ const ProductForm = ({ formData, handleInputChange, handleSubmit, loading, colle
         </select>
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="modelUrl" className="text-right">URL Modelu</Label>
-        <Input id="modelUrl" name="modelUrl" value={formData.modelUrl} onChange={handleInputChange} className="col-span-3" />
+        <Label className="text-right">Zdjęcie (Upload)</Label>
+        <div className="col-span-3">
+          <FileUpload 
+            onFileSelect={(file) => handleFileChange(file, 'imageFile')} 
+            accept="image/*" 
+            label="Upuść zdjęcie tutaj" 
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label className="text-right">Model 3D (GLB)</Label>
+        <div className="col-span-3">
+          <FileUpload 
+            onFileSelect={(file) => handleFileChange(file, 'modelFile')} 
+            accept=".glb" 
+            label="Upuść model .glb tutaj" 
+          />
+        </div>
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
         <Label htmlFor="sizes" className="text-right">Rozmiary (oddzielone przecinkami)</Label>
         <Input id="sizes" name="sizes" value={formData.sizes} onChange={handleInputChange} className="col-span-3" placeholder="S, M, L, XL" />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="images" className="text-right">Zdjęcia (oddzielone przecinkami)</Label>
+        <Label htmlFor="images" className="text-right">Zdjęcia (URL, opcjonalnie)</Label>
         <Textarea id="images" name="images" value={formData.images} onChange={handleInputChange} className="col-span-3" placeholder="http://..., http://..." />
       </div>
     </div>
@@ -343,20 +365,30 @@ export default function AdminPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (file: File | null, field: 'imageFile' | 'modelFile') => {
+    setFormData(prev => ({ ...prev, [field]: file }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    const imagesArray = formData.images.split(',').map(s => s.trim()).filter(s => s);
-    const sizesArray = formData.sizes.split(',').map(s => s.trim()).filter(s => s);
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('composition', formData.composition);
+    formDataToSend.append('price', formData.price);
+    formDataToSend.append('collectionId', formData.collectionId);
+    formDataToSend.append('sizes', formData.sizes);
+    formDataToSend.append('images', formData.images);
+    formDataToSend.append('modelUrl', formData.modelUrl);
 
-    const payload = {
-      ...formData,
-      price: parseFloat(formData.price),
-      collectionId: parseInt(formData.collectionId),
-      images: imagesArray,
-      sizes: sizesArray,
-    };
+    if (formData.imageFile) {
+      formDataToSend.append('imageFile', formData.imageFile);
+    }
+    if (formData.modelFile) {
+      formDataToSend.append('modelFile', formData.modelFile);
+    }
 
     try {
       const url = editingId ? `/api/products/${editingId}` : '/api/products';
@@ -364,8 +396,7 @@ export default function AdminPage() {
 
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: formDataToSend,
       });
 
       if (res.ok) {
@@ -395,6 +426,8 @@ export default function AdminPage() {
       modelUrl: product.modelUrl || '',
       images: product.images.map(i => i.url).join(', '),
       sizes: product.sizes.map(s => s.size).join(', '),
+      imageFile: null,
+      modelFile: null,
     });
     setEditingId(product.id);
     setIsEditDialogOpen(true);
@@ -581,6 +614,7 @@ export default function AdminPage() {
                 <ProductForm 
                   formData={formData}
                   handleInputChange={handleInputChange}
+                  handleFileChange={handleFileChange}
                   handleSubmit={handleSubmit}
                   loading={loading}
                   collections={collections}
@@ -654,6 +688,7 @@ export default function AdminPage() {
             <ProductForm 
               formData={formData}
               handleInputChange={handleInputChange}
+              handleFileChange={handleFileChange}
               handleSubmit={handleSubmit}
               loading={loading}
               collections={collections}

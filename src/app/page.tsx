@@ -12,13 +12,13 @@ import ScrollDownButton from "@/components/Index/ScrollDownButton";
 export default async function Home() {
   const latestCollection = await prisma.collection.findFirst({
     orderBy: { releaseDate: 'desc' },
-    include: { products: { include: { images: true } } }
+    include: { products: { include: { images: { select: { id: true } } } } }
   });
 
   const otherCollections = await prisma.collection.findMany({
     where: { id: { not: latestCollection?.id } },
     orderBy: { releaseDate: 'desc' },
-    include: { products: { take: 1, include: { images: true } } }
+    include: { products: { take: 1, include: { images: { select: { id: true } } } } }
   });
 
   return (

@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { Collection, Product, ProductImage } from "@/generated/client/models";
+import { Collection, Product } from "@/generated/client/client";
 import Image from "next/image";
 
 interface CollectionCardProps {
-  collection: Collection & { products: (Product & { images: ProductImage[] })[] };
+  collection: Collection & { products: (Product & { images: { id: number }[] })[] };
 }
 
 export default function CollectionCard({ collection }: CollectionCardProps) {
   // Get a preview image from the first product in the collection
-  const previewImage = collection.products[0]?.images[0]?.url || "/images/placeholder.png";
+  const previewImage = collection.products[0]?.images[0] ? `/api/images/${collection.products[0].images[0].id}` : "/images/placeholder.png";
 
   return (
     <Link href={`/collections/${collection.id}`} className="group block w-full">

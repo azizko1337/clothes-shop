@@ -1,13 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Product, ProductImage } from "@/generated/client/models";
+import { Product } from "@/generated/client/client";
 
 interface ProductCardProps {
-  product: Product & { images: ProductImage[] };
+  product: Product & { images: { id: number }[] };
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const mainImage = product.images[0]?.url || "/images/placeholder.png";
+  const mainImage = product.images[0] ? `/api/images/${product.images[0].id}` : "/images/placeholder.png";
 
   return (
     <Link href={`/products/${product.id}`} className="group block relative">
