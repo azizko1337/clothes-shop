@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  totpSecret String
+  createdAt  DateTime @default(now())
+}
+
+model Product {
+  id          Int            @id @default(autoincrement())
+  name        String
+  description String
+  composition String
+  price       Float
+  modelUrl    String?
+  modelData   Bytes?
+  modelMimeType String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  images      ProductImage[]
+  sizes       ProductSize[]
+  collectionId Int
+  collection   Collection @relation(fields: [collectionId], references: [id])
+  orders       Order[]
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  data      Bytes
+  mimeType  String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model ProductSize {
+  id        Int     @id @default(autoincrement())
+  size      String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Collection {
+  id          Int      @id @default(autoincrement())
+  name        String
+  releaseDate DateTime
+  description String
+  products    Product[]
+}
+
+model Order {
+  id                 Int         @id @default(autoincrement())
+  address            String
+  status             OrderStatus @default(PENDING)
+  createdAt          DateTime    @default(now())
+  shippedAt          DateTime?
+  deliveredAt        DateTime?
+  totalProductsPrice Float
+  deliveryPrice      Float
+  products           Product[]
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  COMPLETED
+  CANCELED
+}
