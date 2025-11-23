@@ -4,8 +4,22 @@ import CarModel from "@/components/Model/CarModel";
 import AccordionsSection from "@/components/Index/AccordionsSection";
 import { ExternalLinkIcon } from "@/components/ui/icons/oi-external-link";
 import AudioPlayer from "@/components/Index/AudioPlayer";
+import { prisma } from "@/lib/prisma";
+import ProductCard from "@/components/Index/ProductCard";
+import CollectionCard from "@/components/Index/CollectionCard";
 
-export default function Home() {
+export default async function Home() {
+  const latestCollection = await prisma.collection.findFirst({
+    orderBy: { releaseDate: 'desc' },
+    include: { products: { include: { images: true } } }
+  });
+
+  const otherCollections = await prisma.collection.findMany({
+    where: { id: { not: latestCollection?.id } },
+    orderBy: { releaseDate: 'desc' },
+    include: { products: { take: 1, include: { images: true } } }
+  });
+
   return (
     <div>
       {/* Sekcja HERO – przyklejona do góry */}
@@ -45,14 +59,59 @@ export default function Home() {
       </div>
 
       {/* Sekcja niżej – przykrywa HERO */}
-      <div className="w-full h-screen relative z-10 bg-foreground border text-background">
-        <div className="w-full max-w-7xl mx-auto p-8 max-md:p-4">
-          <div>
-            <h1 className="text-xl font-bold">Najnowsza kolekcja</h1>
-          </div>
-          <div>
-            <h1 className="text-xl font-bold">Archiwum kolekcji</h1>
-          </div>
+      <div className="w-full min-h-screen relative z-10 bg-zinc-950 text-zinc-100 pb-20">
+        <div className="w-full max-w-7xl mx-auto p-8 max-md:p-4 space-y-24">
+          
+          {/* Latest Collection Section */}
+          {latestCollection && (
+            <section>
+              <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between border-b border-zinc-800 pb-6">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <h2 className="text-sm font-mono text-zinc-400 uppercase tracking-widest">Latest Drop</h2>
+                  </div>
+                  <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-500">
+                    {latestCollection.name}
+                  </h1>
+                </div>
+                <div className="mt-4 md:mt-0 md:text-right max-w-md">
+                   <p className="text-zinc-400 text-sm font-mono leading-relaxed border-l-2 border-zinc-800 pl-4 md:border-l-0 md:border-r-2 md:pr-4 md:pl-0">
+                     {latestCollection.description}
+                   </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {latestCollection.products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Archive Section */}
+          {otherCollections.length > 0 && (
+            <section>
+               <div className="mb-10 border-b border-zinc-800 pb-4 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-sm font-mono text-zinc-500 uppercase tracking-widest mb-1">Vault</h2>
+                    <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tight text-zinc-300">
+                      Archive
+                    </h1>
+                  </div>
+                  <div className="hidden md:block">
+                    <ExternalLinkIcon className="w-8 h-8 text-zinc-700" />
+                  </div>
+               </div>
+               
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 {otherCollections.map((collection) => (
+                   <CollectionCard key={collection.id} collection={collection} />
+                 ))}
+               </div>
+            </section>
+          )}
         </div>
         
         <AccordionsSection />
