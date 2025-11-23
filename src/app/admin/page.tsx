@@ -35,6 +35,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Pencil, Trash2, LogOut } from 'lucide-react'
+import { Spinner } from "@/components/ui/spinner"
 
 interface Product {
   id: number;
@@ -102,23 +103,23 @@ const ProductForm = ({ formData, handleInputChange, handleSubmit, loading, colle
   <form onSubmit={handleSubmit} className="space-y-4">
     <div className="grid gap-4 py-4">
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="name" className="text-right">Name</Label>
+        <Label htmlFor="name" className="text-right">Nazwa</Label>
         <Input id="name" name="name" value={formData.name} onChange={handleInputChange} className="col-span-3" required />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="description" className="text-right">Description</Label>
+        <Label htmlFor="description" className="text-right">Opis</Label>
         <Textarea id="description" name="description" value={formData.description} onChange={handleInputChange} className="col-span-3" required />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="composition" className="text-right">Composition</Label>
+        <Label htmlFor="composition" className="text-right">Skład</Label>
         <Input id="composition" name="composition" value={formData.composition} onChange={handleInputChange} className="col-span-3" required />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="price" className="text-right">Price</Label>
+        <Label htmlFor="price" className="text-right">Cena</Label>
         <Input id="price" name="price" type="number" step="0.01" value={formData.price} onChange={handleInputChange} className="col-span-3" required />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="collectionId" className="text-right">Collection</Label>
+        <Label htmlFor="collectionId" className="text-right">Kolekcja</Label>
         <select 
           id="collectionId" 
           name="collectionId" 
@@ -127,27 +128,29 @@ const ProductForm = ({ formData, handleInputChange, handleSubmit, loading, colle
           className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
           required
         >
-          <option value="" disabled>Select a collection</option>
+          <option value="" disabled>Wybierz kolekcję</option>
           {collections.map(c => (
             <option key={c.id} value={c.id}>{c.name}</option>
           ))}
         </select>
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="modelUrl" className="text-right">Model URL</Label>
+        <Label htmlFor="modelUrl" className="text-right">URL Modelu</Label>
         <Input id="modelUrl" name="modelUrl" value={formData.modelUrl} onChange={handleInputChange} className="col-span-3" />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="sizes" className="text-right">Sizes (comma sep)</Label>
+        <Label htmlFor="sizes" className="text-right">Rozmiary (oddzielone przecinkami)</Label>
         <Input id="sizes" name="sizes" value={formData.sizes} onChange={handleInputChange} className="col-span-3" placeholder="S, M, L, XL" />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="images" className="text-right">Images (comma sep)</Label>
+        <Label htmlFor="images" className="text-right">Zdjęcia (oddzielone przecinkami)</Label>
         <Textarea id="images" name="images" value={formData.images} onChange={handleInputChange} className="col-span-3" placeholder="http://..., http://..." />
       </div>
     </div>
     <DialogFooter>
-      <Button type="submit" disabled={loading}>{loading ? 'Saving...' : submitLabel}</Button>
+      <Button type="submit" disabled={loading}>
+        {loading ? <><Spinner className="mr-2 h-4 w-4" /> Zapisywanie...</> : submitLabel}
+      </Button>
     </DialogFooter>
   </form>
 );
@@ -157,26 +160,29 @@ interface CollectionFormProps {
   handleCollectionInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleCollectionSubmit: (e: React.FormEvent) => void;
   loading: boolean;
+  submitLabel?: string;
 }
 
-const CollectionForm = ({ collectionFormData, handleCollectionInputChange, handleCollectionSubmit, loading }: CollectionFormProps) => (
+const CollectionForm = ({ collectionFormData, handleCollectionInputChange, handleCollectionSubmit, loading, submitLabel = 'Utwórz kolekcję' }: CollectionFormProps) => (
   <form onSubmit={handleCollectionSubmit} className="space-y-4">
     <div className="grid gap-4 py-4">
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="collectionName" className="text-right">Name</Label>
+        <Label htmlFor="collectionName" className="text-right">Nazwa</Label>
         <Input id="collectionName" name="name" value={collectionFormData.name} onChange={handleCollectionInputChange} className="col-span-3" required />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="collectionDescription" className="text-right">Description</Label>
+        <Label htmlFor="collectionDescription" className="text-right">Opis</Label>
         <Textarea id="collectionDescription" name="description" value={collectionFormData.description} onChange={handleCollectionInputChange} className="col-span-3" required />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="releaseDate" className="text-right">Release Date</Label>
+        <Label htmlFor="releaseDate" className="text-right">Data wydania</Label>
         <Input id="releaseDate" name="releaseDate" type="date" value={collectionFormData.releaseDate} onChange={handleCollectionInputChange} className="col-span-3" required />
       </div>
     </div>
     <DialogFooter>
-      <Button type="submit" disabled={loading}>{loading ? 'Saving...' : 'Create Collection'}</Button>
+      <Button type="submit" disabled={loading}>
+        {loading ? <><Spinner className="mr-2 h-4 w-4" /> Zapisywanie...</> : submitLabel}
+      </Button>
     </DialogFooter>
   </form>
 );
@@ -196,13 +202,20 @@ export default function AdminPage() {
   // Collection state
   const [collectionFormData, setCollectionFormData] = useState<CollectionFormData>(initialCollectionFormData);
   const [isAddCollectionDialogOpen, setIsAddCollectionDialogOpen] = useState(false);
+  const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
+  const [editingCollectionId, setEditingCollectionId] = useState<number | null>(null);
   const [collectionToDelete, setCollectionToDelete] = useState<number | null>(null);
 
   const [loading, setLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
-    fetchProducts();
-    fetchCollections();
+    const init = async () => {
+      setIsInitialLoading(true);
+      await Promise.all([fetchProducts(), fetchCollections()]);
+      setIsInitialLoading(false);
+    };
+    init();
   }, []);
 
   const fetchCollections = async () => {
@@ -271,11 +284,11 @@ export default function AdminPage() {
         setIsEditDialogOpen(false);
         setEditingId(null);
       } else {
-        alert('Failed to save product');
+        alert('Nie udało się zapisać produktu');
       }
     } catch (error) {
       console.error("Error saving product", error);
-      alert('An error occurred');
+      alert('Wystąpił błąd');
     } finally {
       setLoading(false);
     }
@@ -302,6 +315,7 @@ export default function AdminPage() {
 
   const confirmDelete = async () => {
     if (productToDelete) {
+      setLoading(true);
       try {
         const res = await fetch(`/api/products/${productToDelete}`, {
           method: 'DELETE',
@@ -309,11 +323,12 @@ export default function AdminPage() {
         if (res.ok) {
           fetchProducts();
         } else {
-          alert('Failed to delete product');
+          alert('Nie udało się usunąć produktu');
         }
       } catch (error) {
         console.error("Error deleting product", error);
       } finally {
+        setLoading(false);
         setProductToDelete(null);
       }
     }
@@ -324,13 +339,26 @@ export default function AdminPage() {
     setCollectionFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleEditCollectionClick = (collection: Collection) => {
+    setCollectionFormData({
+      name: collection.name,
+      description: collection.description,
+      releaseDate: new Date(collection.releaseDate).toISOString().split('T')[0],
+    });
+    setEditingCollectionId(collection.id);
+    setIsEditCollectionDialogOpen(true);
+  };
+
   const handleCollectionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await fetch('/api/collections', {
-        method: 'POST',
+      const url = editingCollectionId ? `/api/collections/${editingCollectionId}` : '/api/collections';
+      const method = editingCollectionId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(collectionFormData),
       });
@@ -339,12 +367,14 @@ export default function AdminPage() {
         fetchCollections();
         setCollectionFormData(initialCollectionFormData);
         setIsAddCollectionDialogOpen(false);
+        setIsEditCollectionDialogOpen(false);
+        setEditingCollectionId(null);
       } else {
-        alert('Failed to save collection');
+        alert('Nie udało się zapisać kolekcji');
       }
     } catch (error) {
       console.error("Error saving collection", error);
-      alert('An error occurred');
+      alert('Wystąpił błąd');
     } finally {
       setLoading(false);
     }
@@ -356,6 +386,7 @@ export default function AdminPage() {
 
   const confirmDeleteCollection = async () => {
     if (collectionToDelete) {
+      setLoading(true);
       try {
         const res = await fetch(`/api/collections/${collectionToDelete}`, {
           method: 'DELETE',
@@ -363,11 +394,12 @@ export default function AdminPage() {
         if (res.ok) {
           fetchCollections();
         } else {
-          alert('Failed to delete collection');
+          alert('Nie udało się usunąć kolekcji');
         }
       } catch (error) {
         console.error("Error deleting collection", error);
       } finally {
+        setLoading(false);
         setCollectionToDelete(null);
       }
     }
@@ -375,27 +407,41 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-8">
+      {isInitialLoading ? (
+        <div className="flex h-[80vh] items-center justify-center">
+          <Spinner size={48} />
+        </div>
+      ) : (
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage your products and inventory.</p>
+            <h1 className="text-3xl font-bold tracking-tight">Panel Administratora</h1>
+            <p className="text-muted-foreground">Zarządzaj produktami i magazynem.</p>
           </div>
           <div className="flex gap-4">
+            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" /> Wyloguj
+            </Button>
+          </div>
+        </div>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Produkty</CardTitle>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={() => {
                   setFormData(initialFormData);
                   setEditingId(null);
                 }}>
-                  <Plus className="mr-2 h-4 w-4" /> Add Product
+                  <Plus className="mr-2 h-4 w-4" /> Dodaj produkt
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                  <DialogTitle>Add New Product</DialogTitle>
+                  <DialogTitle>Dodaj nowy produkt</DialogTitle>
                   <DialogDescription>
-                    Fill in the details to create a new product.
+                    Wypełnij szczegóły, aby utworzyć nowy produkt.
                   </DialogDescription>
                 </DialogHeader>
                 <ProductForm 
@@ -404,31 +450,21 @@ export default function AdminPage() {
                   handleSubmit={handleSubmit}
                   loading={loading}
                   collections={collections}
-                  submitLabel="Create Product" 
+                  submitLabel="Utwórz produkt" 
                 />
               </DialogContent>
             </Dialog>
-            
-            <Button variant="destructive" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" /> Logout
-            </Button>
-          </div>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Products</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[50px]">ID</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead className="hidden md:table-cell">Description</TableHead>
-                  <TableHead className="hidden md:table-cell">Composition</TableHead>
-                  <TableHead>Sizes</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>Nazwa</TableHead>
+                  <TableHead className="hidden md:table-cell">Opis</TableHead>
+                  <TableHead className="hidden md:table-cell">Skład</TableHead>
+                  <TableHead>Rozmiary</TableHead>
+                  <TableHead className="text-right">Akcje</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -464,7 +500,7 @@ export default function AdminPage() {
                 {products.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                      No products found. Add one to get started.
+                      Nie znaleziono produktów. Dodaj jeden, aby rozpocząć.
                     </TableCell>
                   </TableRow>
                 )}
@@ -476,9 +512,9 @@ export default function AdminPage() {
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Edit Product</DialogTitle>
+              <DialogTitle>Edytuj produkt</DialogTitle>
               <DialogDescription>
-                Make changes to the product here. Click save when you're done.
+                Wprowadź zmiany w produkcie. Kliknij zapisz, gdy skończysz.
               </DialogDescription>
             </DialogHeader>
             <ProductForm 
@@ -487,7 +523,7 @@ export default function AdminPage() {
               handleSubmit={handleSubmit}
               loading={loading}
               collections={collections}
-              submitLabel="Save Changes" 
+              submitLabel="Zapisz zmiany" 
             />
           </DialogContent>
         </Dialog>
@@ -495,33 +531,42 @@ export default function AdminPage() {
         <AlertDialog open={!!productToDelete} onOpenChange={(open) => !open && setProductToDelete(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogTitle>Czy jesteś pewien?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the product
-                and remove it from our servers.
+                Tej operacji nie można cofnąć. Spowoduje to trwałe usunięcie produktu
+                i usunięcie go z naszych serwerów.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
+              <AlertDialogCancel disabled={loading}>Anuluj</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmDelete();
+                }} 
+                className="bg-red-600 hover:bg-red-700"
+                disabled={loading}
+              >
+                {loading ? <><Spinner className="mr-2 h-4 w-4" /> Usuwanie...</> : "Usuń"}
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Collections</CardTitle>
+            <CardTitle>Kolekcje</CardTitle>
             <Dialog open={isAddCollectionDialogOpen} onOpenChange={setIsAddCollectionDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={() => setCollectionFormData(initialCollectionFormData)}>
-                  <Plus className="mr-2 h-4 w-4" /> Add Collection
+                  <Plus className="mr-2 h-4 w-4" /> Dodaj kolekcję
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                  <DialogTitle>Add New Collection</DialogTitle>
+                  <DialogTitle>Dodaj nową kolekcję</DialogTitle>
                   <DialogDescription>
-                    Create a new collection for your products.
+                    Utwórz nową kolekcję dla swoich produktów.
                   </DialogDescription>
                 </DialogHeader>
                 <CollectionForm 
@@ -537,10 +582,10 @@ export default function AdminPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Release Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>Nazwa</TableHead>
+                  <TableHead>Opis</TableHead>
+                  <TableHead>Data wydania</TableHead>
+                  <TableHead className="text-right">Akcje</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -550,9 +595,14 @@ export default function AdminPage() {
                     <TableCell>{collection.description}</TableCell>
                     <TableCell>{new Date(collection.releaseDate).toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" onClick={() => handleDeleteCollectionClick(collection.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => handleEditCollectionClick(collection)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteCollectionClick(collection.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -561,21 +611,49 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
+        <Dialog open={isEditCollectionDialogOpen} onOpenChange={setIsEditCollectionDialogOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Edytuj kolekcję</DialogTitle>
+              <DialogDescription>
+                Wprowadź zmiany w kolekcji. Kliknij zapisz, gdy skończysz.
+              </DialogDescription>
+            </DialogHeader>
+            <CollectionForm 
+              collectionFormData={collectionFormData}
+              handleCollectionInputChange={handleCollectionInputChange}
+              handleCollectionSubmit={handleCollectionSubmit}
+              loading={loading}
+              submitLabel="Zapisz zmiany"
+            />
+          </DialogContent>
+        </Dialog>
+
         <AlertDialog open={!!collectionToDelete} onOpenChange={(open) => !open && setCollectionToDelete(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogTitle>Czy jesteś pewien?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the collection.
+                Tej operacji nie można cofnąć. Spowoduje to trwałe usunięcie kolekcji.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDeleteCollection}>Delete</AlertDialogAction>
+              <AlertDialogCancel disabled={loading}>Anuluj</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmDeleteCollection();
+                }}
+                className="bg-red-600 hover:bg-red-700"
+                disabled={loading}
+              >
+                {loading ? <><Spinner className="mr-2 h-4 w-4" /> Usuwanie...</> : "Usuń"}
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
       </div>
+      )}
     </div>
   );
 }

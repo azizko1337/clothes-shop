@@ -23,18 +23,18 @@ export default function LoginPage() {
       router.push('/admin');
     } else {
       const data = await res.json();
-      setError(data.error || 'Login failed');
+      setError(data.error || 'Logowanie nieudane');
     }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 text-black">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
-        <h1 className="text-2xl font-bold text-center">Admin Login</h1>
+        <h1 className="text-2xl font-bold text-center">Logowanie Administratora</h1>
         {error && <p className="text-red-500 text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Username</label>
+            <label className="block text-sm font-medium text-gray-700">Nazwa użytkownika</label>
             <input
               type="text"
               value={username}
@@ -44,7 +44,7 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">TOTP Code</label>
+            <label className="block text-sm font-medium text-gray-700">Kod TOTP</label>
             <input
               type="text"
               value={code}
@@ -57,7 +57,7 @@ export default function LoginPage() {
             type="submit"
             className="w-full px-4 py-2 font-bold text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-200"
           >
-            Login
+            Zaloguj
           </button>
         </form>
       </div>

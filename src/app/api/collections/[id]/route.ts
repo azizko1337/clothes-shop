@@ -19,3 +19,29 @@ export async function DELETE(
     return NextResponse.json({ error: 'Failed to delete collection' }, { status: 500 });
   }
 }
+
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const collectionId = parseInt(id);
+    const body = await request.json();
+    const { name, description, releaseDate } = body;
+
+    const updatedCollection = await prisma.collection.update({
+      where: { id: collectionId },
+      data: {
+        name,
+        description,
+        releaseDate: new Date(releaseDate),
+      },
+    });
+
+    return NextResponse.json(updatedCollection);
+  } catch (error) {
+    console.error('Error updating collection:', error);
+    return NextResponse.json({ error: 'Failed to update collection' }, { status: 500 });
+  }
+}
