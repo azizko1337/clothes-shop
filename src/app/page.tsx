@@ -54,9 +54,9 @@ export default async function Home() {
             className="object-contain"
           />
         </div>
-
-        <AudioPlayer />
       </div>
+
+      <AudioPlayer />
 
       {/* Sekcja niżej – przykrywa HERO */}
       <div className="w-full min-h-screen relative z-10 bg-zinc-950 text-zinc-100 pb-20">
