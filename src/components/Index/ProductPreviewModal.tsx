@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
+import { useCart } from "@/context/CartContext";
 
 interface ProductPreviewModalProps {
   product: Product & { images: { id: number }[] };
@@ -15,6 +16,7 @@ interface ProductPreviewModalProps {
 }
 
 export default function ProductPreviewModal({ product, isOpen, onClose }: ProductPreviewModalProps) {
+  const { addItem } = useCart();
   // Determine if we have a model.
   // We check if modelUrl is provided OR if modelData is present (not null).
   const hasModel = !!product.modelUrl || (product.modelData !== null && product.modelData !== undefined);
@@ -25,6 +27,11 @@ export default function ProductPreviewModal({ product, isOpen, onClose }: Produc
   // If we have a model, we default to it.
   const [showModel, setShowModel] = useState(!!modelUrl);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(product.images[0]?.id || null);
+
+  const handleAddToCart = () => {
+    addItem(product);
+    onClose();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -98,7 +105,11 @@ export default function ProductPreviewModal({ product, isOpen, onClose }: Produc
           </div>
 
           <div className="mt-8 pt-6 border-t border-zinc-800">
-            <Button className="w-full bg-white text-black hover:bg-zinc-200 font-bold tracking-wide h-12 text-lg" size="lg">
+            <Button 
+              className="w-full bg-white text-black hover:bg-zinc-200 font-bold tracking-wide h-12 text-lg" 
+              size="lg"
+              onClick={handleAddToCart}
+            >
               <ShoppingCart className="mr-2 h-5 w-5" />
               DODAJ DO KOSZYKA
             </Button>

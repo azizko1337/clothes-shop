@@ -1,4 +1,3 @@
-// ...existing code...
 "use client"
 
 import { FaMusic, FaXmark } from "react-icons/fa6";
@@ -177,6 +176,17 @@ function AudioPlayer(){
         };
     }, []);
 
+    useEffect(() => {
+        if (isExpanded) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isExpanded]);
+
     const fmt = (sec: number) => {
         if (!isFinite(sec)) return "--:--";
         const m = Math.floor(sec/60);
@@ -352,4 +362,3 @@ function AudioPlayer(){
 }
 
 export default AudioPlayer;
-// ...existing code...

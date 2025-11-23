@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/Index/ProductCard";
 import CollectionCard from "@/components/Index/CollectionCard";
 import ScrollDownButton from "@/components/Index/ScrollDownButton";
+import CartTrigger from "@/components/Cart/CartTrigger";
 
 export default async function Home() {
   const latestCollection = await prisma.collection.findFirst({
@@ -23,6 +24,7 @@ export default async function Home() {
 
   return (
     <div>
+      <CartTrigger />
       {/* Sekcja HERO – przyklejona do góry */}
       <div className="w-full h-screen sticky top-0 z-0 bg-radial-[at_25%_25%] from-zinc-800 to-zinc-900 to-75%">
         <div className="w-full h-full absolute top-0 left-0">
