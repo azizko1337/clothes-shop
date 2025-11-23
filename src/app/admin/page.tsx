@@ -90,6 +90,32 @@ const initialCollectionFormData: CollectionFormData = {
   releaseDate: '',
 };
 
+interface Order {
+  id: number;
+  address: string;
+  status: string;
+  createdAt: string;
+  shippedAt?: string;
+  deliveredAt?: string;
+  totalProductsPrice: number;
+  deliveryPrice: number;
+  products: Product[];
+}
+
+interface OrderFormData {
+  status: string;
+  address: string;
+  shippedAt: string;
+  deliveredAt: string;
+}
+
+const initialOrderFormData: OrderFormData = {
+  status: '',
+  address: '',
+  shippedAt: '',
+  deliveredAt: '',
+};
+
 interface ProductFormProps {
   formData: ProductFormData;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
@@ -187,10 +213,58 @@ const CollectionForm = ({ collectionFormData, handleCollectionInputChange, handl
   </form>
 );
 
+interface OrderFormProps {
+  orderFormData: OrderFormData;
+  handleOrderInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  handleOrderSubmit: (e: React.FormEvent) => void;
+  loading: boolean;
+}
+
+const OrderForm = ({ orderFormData, handleOrderInputChange, handleOrderSubmit, loading }: OrderFormProps) => (
+  <form onSubmit={handleOrderSubmit} className="space-y-4">
+    <div className="grid gap-4 py-4">
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="status" className="text-right">Status</Label>
+        <select
+          id="status"
+          name="status"
+          value={orderFormData.status}
+          onChange={handleOrderInputChange}
+          className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          required
+        >
+          <option value="PENDING">Oczekujące (PENDING)</option>
+          <option value="PAID">Opłacone (PAID)</option>
+          <option value="COMPLETED">Zakończone (COMPLETED)</option>
+          <option value="CANCELED">Anulowane (CANCELED)</option>
+        </select>
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="address" className="text-right">Adres</Label>
+        <Textarea id="address" name="address" value={orderFormData.address} onChange={handleOrderInputChange} className="col-span-3" required />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="shippedAt" className="text-right">Data wysyłki</Label>
+        <Input id="shippedAt" name="shippedAt" type="datetime-local" value={orderFormData.shippedAt} onChange={handleOrderInputChange} className="col-span-3" />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="deliveredAt" className="text-right">Data dostarczenia</Label>
+        <Input id="deliveredAt" name="deliveredAt" type="datetime-local" value={orderFormData.deliveredAt} onChange={handleOrderInputChange} className="col-span-3" />
+      </div>
+    </div>
+    <DialogFooter>
+      <Button type="submit" disabled={loading}>
+        {loading ? <><Spinner className="mr-2 h-4 w-4" /> Zapisywanie...</> : "Zapisz zmiany"}
+      </Button>
+    </DialogFooter>
+  </form>
+);
+
 export default function AdminPage() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   
   // Product state
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
@@ -206,13 +280,18 @@ export default function AdminPage() {
   const [editingCollectionId, setEditingCollectionId] = useState<number | null>(null);
   const [collectionToDelete, setCollectionToDelete] = useState<number | null>(null);
 
+  // Order state
+  const [orderFormData, setOrderFormData] = useState<OrderFormData>(initialOrderFormData);
+  const [isEditOrderDialogOpen, setIsEditOrderDialogOpen] = useState(false);
+  const [editingOrderId, setEditingOrderId] = useState<number | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
       setIsInitialLoading(true);
-      await Promise.all([fetchProducts(), fetchCollections()]);
+      await Promise.all([fetchProducts(), fetchCollections(), fetchOrders()]);
       setIsInitialLoading(false);
     };
     init();
@@ -239,6 +318,18 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error("Failed to fetch products", error);
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch('/api/orders');
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch orders", error);
     }
   };
 
@@ -402,6 +493,49 @@ export default function AdminPage() {
         setLoading(false);
         setCollectionToDelete(null);
       }
+    }
+  };
+
+  const handleOrderInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setOrderFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditOrderClick = (order: Order) => {
+    setOrderFormData({
+      status: order.status,
+      address: order.address,
+      shippedAt: order.shippedAt ? new Date(order.shippedAt).toISOString().slice(0, 16) : '',
+      deliveredAt: order.deliveredAt ? new Date(order.deliveredAt).toISOString().slice(0, 16) : '',
+    });
+    setEditingOrderId(order.id);
+    setIsEditOrderDialogOpen(true);
+  };
+
+  const handleOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await fetch(`/api/orders/${editingOrderId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderFormData),
+      });
+
+      if (res.ok) {
+        fetchOrders();
+        setOrderFormData(initialOrderFormData);
+        setIsEditOrderDialogOpen(false);
+        setEditingOrderId(null);
+      } else {
+        alert('Nie udało się zaktualizować zamówienia');
+      }
+    } catch (error) {
+      console.error("Error updating order", error);
+      alert('Wystąpił błąd');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -611,6 +745,47 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Zamówienia</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Data</TableHead>
+                  <TableHead>Wartość</TableHead>
+                  <TableHead className="text-right">Akcje</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {orders.map((order) => (
+                  <TableRow key={order.id}>
+                    <TableCell className="font-medium">{order.id}</TableCell>
+                    <TableCell>{order.status}</TableCell>
+                    <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell>{(order.totalProductsPrice + order.deliveryPrice).toFixed(2)} zł</TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon" onClick={() => handleEditOrderClick(order)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {orders.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                      Brak zamówień.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
         <Dialog open={isEditCollectionDialogOpen} onOpenChange={setIsEditCollectionDialogOpen}>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
@@ -625,6 +800,23 @@ export default function AdminPage() {
               handleCollectionSubmit={handleCollectionSubmit}
               loading={loading}
               submitLabel="Zapisz zmiany"
+            />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isEditOrderDialogOpen} onOpenChange={setIsEditOrderDialogOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Edytuj zamówienie</DialogTitle>
+              <DialogDescription>
+                Zmień status lub dane zamówienia.
+              </DialogDescription>
+            </DialogHeader>
+            <OrderForm
+              orderFormData={orderFormData}
+              handleOrderInputChange={handleOrderInputChange}
+              handleOrderSubmit={handleOrderSubmit}
+              loading={loading}
             />
           </DialogContent>
         </Dialog>

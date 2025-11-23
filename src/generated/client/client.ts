@@ -69,3 +69,8 @@ export type ProductSize = Prisma.ProductSizeModel
  * 
  */
 export type Collection = Prisma.CollectionModel
+/**
+ * Model Order
+ * 
+ */
+export type Order = Prisma.OrderModel

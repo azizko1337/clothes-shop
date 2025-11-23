@@ -31,6 +31,7 @@ model Product {
   sizes       ProductSize[]
   collectionId Int
   collection   Collection @relation(fields: [collectionId], references: [id])
+  orders       Order[]
 }
 
 model ProductImage {
@@ -53,4 +54,23 @@ model Collection {
   releaseDate DateTime
   description String
   products    Product[]
+}
+
+model Order {
+  id                 Int         @id @default(autoincrement())
+  address            String
+  status             OrderStatus @default(PENDING)
+  createdAt          DateTime    @default(now())
+  shippedAt          DateTime?
+  deliveredAt        DateTime?
+  totalProductsPrice Float
+  deliveryPrice      Float
+  products           Product[]
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  COMPLETED
+  CANCELED
 }
