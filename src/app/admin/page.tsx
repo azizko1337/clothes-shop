@@ -166,6 +166,24 @@ const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubm
           ))}
         </select>
       </div>
+      
+      {formData.images && (
+        <div className="grid grid-cols-4 items-start gap-4">
+          <Label className="text-right pt-2">Obecne zdjęcia</Label>
+          <div className="col-span-3 flex flex-wrap gap-4">
+            {formData.images.split(',').map(url => url.trim()).filter(url => url).map((url, index) => (
+              <div key={index} className="relative w-24 h-24 border rounded-md overflow-hidden bg-gray-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt={`Product ${index}`} className="object-cover w-full h-full" />
+              </div>
+            ))}
+            {formData.images.split(',').map(url => url.trim()).filter(url => url).length === 0 && (
+               <span className="text-muted-foreground text-sm py-2">Brak zdjęć</span>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-4 items-center gap-4">
         <Label className="text-right">Zdjęcie (Upload)</Label>
         <div className="col-span-3">
