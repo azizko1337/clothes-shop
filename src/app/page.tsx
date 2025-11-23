@@ -53,8 +53,8 @@ export default async function Home() {
       <AudioPlayer />
 
       {/* Sekcja niżej – przykrywa HERO */}
-      <div className="w-full min-h-screen relative z-10 bg-zinc-950 text-zinc-100 pb-20">
-        <div className="w-full max-w-7xl mx-auto p-8 max-md:p-4 space-y-24">
+      <div className="w-full min-h-screen relative z-10 bg-zinc-950 text-zinc-100">
+        <div className="w-full max-w-7xl mx-auto p-8 max-md:p-4 space-y-24 pb-24">
           
           {/* Latest Collection Section */}
           {latestCollection && (
