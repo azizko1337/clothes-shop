@@ -200,7 +200,7 @@ function AudioPlayer(){
             <button
                 onClick={() => setIsExpanded(true)}
                 className={clsx(
-                    "fixed right-0 top-24 z-[100] p-3 bg-black/80 backdrop-blur-md text-accent rounded-l-xl border-y border-l border-neutral-800 shadow-2xl md:hidden transition-transform duration-300",
+                    "fixed right-0 top-24 z-[100] p-3 bg-black/80 backdrop-blur-md text-accent rounded-l-xl border-y border-l border-neutral-800 shadow-2xl transition-transform duration-300",
                     isExpanded ? "translate-x-full" : "translate-x-0"
                 )}
                 aria-label="Otwórz odtwarzacz"
@@ -217,13 +217,12 @@ function AudioPlayer(){
 
             <div className={clsx(
                 "flex flex-col items-center select-none transition-all duration-500 ease-in-out",
-                "md:absolute md:top-10 md:right-10 md:w-72 md:translate-x-0 md:opacity-100 md:pointer-events-auto md:bg-transparent md:h-auto md:justify-start",
                 "fixed inset-0 z-[100] bg-black/95 justify-center",
-                isExpanded ? "opacity-100 pointer-events-auto translate-x-0" : "opacity-0 pointer-events-none translate-x-full md:translate-x-0 md:opacity-100 md:pointer-events-auto"
+                isExpanded ? "opacity-100 pointer-events-auto translate-x-0" : "opacity-0 pointer-events-none translate-x-full"
             )}>
                 <button 
                     onClick={() => setIsExpanded(false)}
-                    className="absolute top-6 right-6 text-neutral-400 hover:text-white md:hidden p-2"
+                    className="absolute top-6 right-6 text-neutral-400 hover:text-white p-2"
                 >
                     <FaXmark size={24} />
                 </button>
