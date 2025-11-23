@@ -19,9 +19,9 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, description, composition, modelUrl, images, sizes } = body;
+    const { name, description, composition, price, collectionId, modelUrl, images, sizes } = body;
 
-    if (!name || !description || !composition) {
+    if (!name || !description || !composition || !price || !collectionId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -30,6 +30,8 @@ export async function POST(request: Request) {
         name,
         description,
         composition,
+        price,
+        collectionId,
         modelUrl,
         images: {
           create: images?.map((url: string) => ({ url })) || [],

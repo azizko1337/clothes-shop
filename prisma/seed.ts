@@ -30,6 +30,43 @@ async function main() {
       console.log('User already existed. TOTP secret not changed.');
       console.log(`Existing Secret: ${user.totpSecret}`);
   }
+
+  // Create a collection
+  const collection = await prisma.collection.create({
+    data: {
+      name: 'Summer 2025',
+      description: 'The hottest looks for the summer.',
+      releaseDate: new Date('2025-06-01'),
+    },
+  });
+
+  console.log(`Created collection: ${collection.name}`);
+
+  // Create products
+  const product1 = await prisma.product.create({
+    data: {
+      name: 'Summer T-Shirt',
+      description: 'A cool t-shirt for hot days.',
+      composition: '100% Cotton',
+      price: 29.99,
+      collectionId: collection.id,
+      sizes: {
+        create: [
+          { size: 'S' },
+          { size: 'M' },
+          { size: 'L' },
+        ],
+      },
+      images: {
+        create: [
+          { url: '/images/tshirt-front.jpg' },
+          { url: '/images/tshirt-back.jpg' },
+        ],
+      },
+    },
+  });
+  
+  console.log(`Created product: ${product1.name}`);
 }
 
 main()

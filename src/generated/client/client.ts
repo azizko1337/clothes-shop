@@ -64,3 +64,8 @@ export type ProductImage = Prisma.ProductImageModel
  * 
  */
 export type ProductSize = Prisma.ProductSizeModel
+/**
+ * Model Collection
+ * 
+ */
+export type Collection = Prisma.CollectionModel

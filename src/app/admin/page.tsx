@@ -41,6 +41,8 @@ interface Product {
   name: string;
   description: string;
   composition: string;
+  price: number;
+  collectionId: number;
   modelUrl?: string;
   sizes: { size: string }[];
   images: { url: string }[];
@@ -50,6 +52,8 @@ interface ProductFormData {
   name: string;
   description: string;
   composition: string;
+  price: string;
+  collectionId: string;
   modelUrl: string;
   images: string; // comma separated
   sizes: string; // comma separated
@@ -59,24 +63,159 @@ const initialFormData: ProductFormData = {
   name: '',
   description: '',
   composition: '',
+  price: '',
+  collectionId: '',
   modelUrl: '',
   images: '',
   sizes: '',
 };
 
+interface Collection {
+  id: number;
+  name: string;
+  description: string;
+  releaseDate: string;
+}
+
+interface CollectionFormData {
+  name: string;
+  description: string;
+  releaseDate: string;
+}
+
+const initialCollectionFormData: CollectionFormData = {
+  name: '',
+  description: '',
+  releaseDate: '',
+};
+
+interface ProductFormProps {
+  formData: ProductFormData;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  handleSubmit: (e: React.FormEvent) => void;
+  loading: boolean;
+  collections: Collection[];
+  submitLabel: string;
+}
+
+const ProductForm = ({ formData, handleInputChange, handleSubmit, loading, collections, submitLabel }: ProductFormProps) => (
+  <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="grid gap-4 py-4">
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="name" className="text-right">Name</Label>
+        <Input id="name" name="name" value={formData.name} onChange={handleInputChange} className="col-span-3" required />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="description" className="text-right">Description</Label>
+        <Textarea id="description" name="description" value={formData.description} onChange={handleInputChange} className="col-span-3" required />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="composition" className="text-right">Composition</Label>
+        <Input id="composition" name="composition" value={formData.composition} onChange={handleInputChange} className="col-span-3" required />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="price" className="text-right">Price</Label>
+        <Input id="price" name="price" type="number" step="0.01" value={formData.price} onChange={handleInputChange} className="col-span-3" required />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="collectionId" className="text-right">Collection</Label>
+        <select 
+          id="collectionId" 
+          name="collectionId" 
+          value={formData.collectionId} 
+          onChange={handleInputChange} 
+          className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+          required
+        >
+          <option value="" disabled>Select a collection</option>
+          {collections.map(c => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="modelUrl" className="text-right">Model URL</Label>
+        <Input id="modelUrl" name="modelUrl" value={formData.modelUrl} onChange={handleInputChange} className="col-span-3" />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="sizes" className="text-right">Sizes (comma sep)</Label>
+        <Input id="sizes" name="sizes" value={formData.sizes} onChange={handleInputChange} className="col-span-3" placeholder="S, M, L, XL" />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="images" className="text-right">Images (comma sep)</Label>
+        <Textarea id="images" name="images" value={formData.images} onChange={handleInputChange} className="col-span-3" placeholder="http://..., http://..." />
+      </div>
+    </div>
+    <DialogFooter>
+      <Button type="submit" disabled={loading}>{loading ? 'Saving...' : submitLabel}</Button>
+    </DialogFooter>
+  </form>
+);
+
+interface CollectionFormProps {
+  collectionFormData: CollectionFormData;
+  handleCollectionInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleCollectionSubmit: (e: React.FormEvent) => void;
+  loading: boolean;
+}
+
+const CollectionForm = ({ collectionFormData, handleCollectionInputChange, handleCollectionSubmit, loading }: CollectionFormProps) => (
+  <form onSubmit={handleCollectionSubmit} className="space-y-4">
+    <div className="grid gap-4 py-4">
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="collectionName" className="text-right">Name</Label>
+        <Input id="collectionName" name="name" value={collectionFormData.name} onChange={handleCollectionInputChange} className="col-span-3" required />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="collectionDescription" className="text-right">Description</Label>
+        <Textarea id="collectionDescription" name="description" value={collectionFormData.description} onChange={handleCollectionInputChange} className="col-span-3" required />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="releaseDate" className="text-right">Release Date</Label>
+        <Input id="releaseDate" name="releaseDate" type="date" value={collectionFormData.releaseDate} onChange={handleCollectionInputChange} className="col-span-3" required />
+      </div>
+    </div>
+    <DialogFooter>
+      <Button type="submit" disabled={loading}>{loading ? 'Saving...' : 'Create Collection'}</Button>
+    </DialogFooter>
+  </form>
+);
+
 export default function AdminPage() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  
+  // Product state
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
-  const [loading, setLoading] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [productToDelete, setProductToDelete] = useState<number | null>(null);
 
+  // Collection state
+  const [collectionFormData, setCollectionFormData] = useState<CollectionFormData>(initialCollectionFormData);
+  const [isAddCollectionDialogOpen, setIsAddCollectionDialogOpen] = useState(false);
+  const [collectionToDelete, setCollectionToDelete] = useState<number | null>(null);
+
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     fetchProducts();
+    fetchCollections();
   }, []);
+
+  const fetchCollections = async () => {
+    try {
+      const res = await fetch('/api/collections');
+      if (res.ok) {
+        const data = await res.json();
+        setCollections(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch collections", error);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -95,7 +234,7 @@ export default function AdminPage() {
     router.push('/login');
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -109,6 +248,8 @@ export default function AdminPage() {
 
     const payload = {
       ...formData,
+      price: parseFloat(formData.price),
+      collectionId: parseInt(formData.collectionId),
       images: imagesArray,
       sizes: sizesArray,
     };
@@ -145,6 +286,8 @@ export default function AdminPage() {
       name: product.name,
       description: product.description,
       composition: product.composition,
+      price: product.price.toString(),
+      collectionId: product.collectionId.toString(),
       modelUrl: product.modelUrl || '',
       images: product.images.map(i => i.url).join(', '),
       sizes: product.sizes.map(s => s.size).join(', '),
@@ -176,39 +319,59 @@ export default function AdminPage() {
     }
   };
 
-  const ProductForm = ({ title, submitLabel }: { title: string, submitLabel: string }) => (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="name" className="text-right">Name</Label>
-          <Input id="name" name="name" value={formData.name} onChange={handleInputChange} className="col-span-3" required />
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="description" className="text-right">Description</Label>
-          <Textarea id="description" name="description" value={formData.description} onChange={handleInputChange} className="col-span-3" required />
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="composition" className="text-right">Composition</Label>
-          <Input id="composition" name="composition" value={formData.composition} onChange={handleInputChange} className="col-span-3" required />
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="modelUrl" className="text-right">Model URL</Label>
-          <Input id="modelUrl" name="modelUrl" value={formData.modelUrl} onChange={handleInputChange} className="col-span-3" />
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="sizes" className="text-right">Sizes (comma sep)</Label>
-          <Input id="sizes" name="sizes" value={formData.sizes} onChange={handleInputChange} className="col-span-3" placeholder="S, M, L, XL" />
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="images" className="text-right">Images (comma sep)</Label>
-          <Textarea id="images" name="images" value={formData.images} onChange={handleInputChange} className="col-span-3" placeholder="http://..., http://..." />
-        </div>
-      </div>
-      <DialogFooter>
-        <Button type="submit" disabled={loading}>{loading ? 'Saving...' : submitLabel}</Button>
-      </DialogFooter>
-    </form>
-  );
+  const handleCollectionInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setCollectionFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCollectionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/collections', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(collectionFormData),
+      });
+
+      if (res.ok) {
+        fetchCollections();
+        setCollectionFormData(initialCollectionFormData);
+        setIsAddCollectionDialogOpen(false);
+      } else {
+        alert('Failed to save collection');
+      }
+    } catch (error) {
+      console.error("Error saving collection", error);
+      alert('An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteCollectionClick = (id: number) => {
+    setCollectionToDelete(id);
+  };
+
+  const confirmDeleteCollection = async () => {
+    if (collectionToDelete) {
+      try {
+        const res = await fetch(`/api/collections/${collectionToDelete}`, {
+          method: 'DELETE',
+        });
+        if (res.ok) {
+          fetchCollections();
+        } else {
+          alert('Failed to delete collection');
+        }
+      } catch (error) {
+        console.error("Error deleting collection", error);
+      } finally {
+        setCollectionToDelete(null);
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-8">
@@ -235,7 +398,14 @@ export default function AdminPage() {
                     Fill in the details to create a new product.
                   </DialogDescription>
                 </DialogHeader>
-                <ProductForm title="Add Product" submitLabel="Create Product" />
+                <ProductForm 
+                  formData={formData}
+                  handleInputChange={handleInputChange}
+                  handleSubmit={handleSubmit}
+                  loading={loading}
+                  collections={collections}
+                  submitLabel="Create Product" 
+                />
               </DialogContent>
             </Dialog>
             
@@ -311,7 +481,14 @@ export default function AdminPage() {
                 Make changes to the product here. Click save when you're done.
               </DialogDescription>
             </DialogHeader>
-            <ProductForm title="Edit Product" submitLabel="Save Changes" />
+            <ProductForm 
+              formData={formData}
+              handleInputChange={handleInputChange}
+              handleSubmit={handleSubmit}
+              loading={loading}
+              collections={collections}
+              submitLabel="Save Changes" 
+            />
           </DialogContent>
         </Dialog>
 
@@ -327,6 +504,74 @@ export default function AdminPage() {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Collections</CardTitle>
+            <Dialog open={isAddCollectionDialogOpen} onOpenChange={setIsAddCollectionDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={() => setCollectionFormData(initialCollectionFormData)}>
+                  <Plus className="mr-2 h-4 w-4" /> Add Collection
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                  <DialogTitle>Add New Collection</DialogTitle>
+                  <DialogDescription>
+                    Create a new collection for your products.
+                  </DialogDescription>
+                </DialogHeader>
+                <CollectionForm 
+                  collectionFormData={collectionFormData}
+                  handleCollectionInputChange={handleCollectionInputChange}
+                  handleCollectionSubmit={handleCollectionSubmit}
+                  loading={loading}
+                />
+              </DialogContent>
+            </Dialog>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Release Date</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {collections.map((collection) => (
+                  <TableRow key={collection.id}>
+                    <TableCell className="font-medium">{collection.name}</TableCell>
+                    <TableCell>{collection.description}</TableCell>
+                    <TableCell>{new Date(collection.releaseDate).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon" onClick={() => handleDeleteCollectionClick(collection.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <AlertDialog open={!!collectionToDelete} onOpenChange={(open) => !open && setCollectionToDelete(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the collection.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDeleteCollection}>Delete</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
