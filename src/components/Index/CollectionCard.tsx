@@ -3,7 +3,8 @@ import { Collection, Product } from "@/generated/client/client";
 import Image from "next/image";
 
 interface CollectionCardProps {
-  collection: Collection & { products: (Product & { images: { id: number }[] })[] };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  collection: Collection & { products: (Omit<Product, 'modelData'> & { modelData?: any; images: { id: number }[] })[] };
 }
 
 export default function CollectionCard({ collection }: CollectionCardProps) {

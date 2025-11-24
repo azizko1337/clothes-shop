@@ -4,6 +4,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/client"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -33,7 +34,7 @@ model Product {
   sizes       ProductSize[]
   collectionId Int
   collection   Collection @relation(fields: [collectionId], references: [id])
-  orders       Order[]
+  orderItems   OrderItem[]
 }
 
 model ProductImage {
@@ -63,13 +64,25 @@ model Collection {
 model Order {
   id                 Int         @id @default(autoincrement())
   address            String
+  email              String
   status             OrderStatus @default(PENDING)
   createdAt          DateTime    @default(now())
   shippedAt          DateTime?
   deliveredAt        DateTime?
   totalProductsPrice Float
   deliveryPrice      Float
-  products           Product[]
+  items              OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  size      String?
+  price     Float
 }
 
 enum OrderStatus {
