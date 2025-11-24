@@ -2,15 +2,22 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useGLTF, OrbitControls, Stage } from "@react-three/drei";
-import { Suspense } from "react";
+import { Suspense, memo, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 function Model({ url }: { url: string }) {
   const { scene } = useGLTF(url);
+  
+  useEffect(() => {
+    return () => {
+      useGLTF.preload(url);
+    }
+  }, [url]);
+
   return <primitive object={scene} />;
 }
 
-export default function Product3DModel({ modelUrl }: { modelUrl: string }) {
+function Product3DModel({ modelUrl }: { modelUrl: string }) {
   return (
     <div className="w-full h-full min-h-[300px] bg-zinc-900/50 rounded-xl overflow-hidden relative">
       <Suspense fallback={
@@ -18,7 +25,7 @@ export default function Product3DModel({ modelUrl }: { modelUrl: string }) {
           <Loader2 className="w-8 h-8 animate-spin" />
         </div>
       }>
-        <Canvas shadows dpr={[1, 2]} camera={{ fov: 50 }}>
+        <Canvas shadows dpr={[1, 2]} camera={{ fov: 50 }} gl={{ preserveDrawingBuffer: true }}>
           <Stage environment="city" intensity={0.6}>
             <Model url={modelUrl} />
           </Stage>
@@ -28,3 +35,5 @@ export default function Product3DModel({ modelUrl }: { modelUrl: string }) {
     </div>
   );
 }
+
+export default memo(Product3DModel);

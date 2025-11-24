@@ -13,13 +13,48 @@ import CartTrigger from "@/components/Cart/CartTrigger";
 export default async function Home() {
   const latestCollection = await prisma.collection.findFirst({
     orderBy: { releaseDate: 'desc' },
-    include: { products: { include: { images: { select: { id: true } } } } }
+    include: { 
+      products: { 
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          composition: true,
+          price: true,
+          modelUrl: true,
+          modelMimeType: true,
+          createdAt: true,
+          updatedAt: true,
+          collectionId: true,
+          images: { select: { id: true } },
+          sizes: true
+        }
+      } 
+    }
   });
 
   const otherCollections = await prisma.collection.findMany({
     where: { id: { not: latestCollection?.id } },
     orderBy: { releaseDate: 'desc' },
-    include: { products: { take: 1, include: { images: { select: { id: true } } } } }
+    include: { 
+      products: { 
+        take: 1, 
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          composition: true,
+          price: true,
+          modelUrl: true,
+          modelMimeType: true,
+          createdAt: true,
+          updatedAt: true,
+          collectionId: true,
+          images: { select: { id: true } },
+          sizes: true
+        }
+      } 
+    }
   });
 
   return (

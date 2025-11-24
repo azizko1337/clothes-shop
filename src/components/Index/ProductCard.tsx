@@ -6,7 +6,8 @@ import { useState } from "react";
 import ProductPreviewModal from "./ProductPreviewModal";
 
 interface ProductCardProps {
-  product: Product & { images: { id: number }[] };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  product: Omit<Product, 'modelData'> & { modelData?: any; images: { id: number }[] };
 }
 
 export default function ProductCard({ product }: ProductCardProps) {

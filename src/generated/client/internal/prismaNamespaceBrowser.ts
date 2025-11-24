@@ -101,6 +101,7 @@ export const ProductImageScalarFieldEnum = {
   id: 'id',
   data: 'data',
   mimeType: 'mimeType',
+  order: 'order',
   productId: 'productId'
 } as const
 

@@ -37,6 +37,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Pencil, Trash2, LogOut } from 'lucide-react'
 import { Spinner } from "@/components/ui/spinner"
 import { FileUpload } from "@/components/ui/file-upload"
+import Product3DModel from "@/components/Model/Product3DModel"
 
 interface Product {
   id: number;
@@ -47,7 +48,7 @@ interface Product {
   collectionId: number;
   modelUrl?: string;
   sizes: { size: string }[];
-  images: { url: string }[];
+  images: { id: number; url: string; order: number }[];
 }
 
 interface ProductFormData {
@@ -57,10 +58,10 @@ interface ProductFormData {
   price: string;
   collectionId: string;
   modelUrl: string;
-  images: string; // comma separated
   sizes: string; // comma separated
   imageFile: File | null;
   modelFile: File | null;
+  currentImages: { id: number; url: string; order: number }[];
 }
 
 const initialFormData: ProductFormData = {
@@ -70,10 +71,10 @@ const initialFormData: ProductFormData = {
   price: '',
   collectionId: '',
   modelUrl: '',
-  images: '',
   sizes: '',
   imageFile: null,
   modelFile: null,
+  currentImages: [],
 };
 
 interface Collection {
@@ -129,9 +130,11 @@ interface ProductFormProps {
   loading: boolean;
   collections: Collection[];
   submitLabel: string;
+  onDeleteImage?: (imageId: number) => void;
+  onReorderImages?: (images: { id: number; url: string; order: number }[]) => void;
 }
 
-const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubmit, loading, collections, submitLabel }: ProductFormProps) => (
+const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubmit, loading, collections, submitLabel, onDeleteImage, onReorderImages }: ProductFormProps) => (
   <form onSubmit={handleSubmit} className="space-y-4">
     <div className="grid gap-4 py-4">
       <div className="grid grid-cols-4 items-center gap-4">
@@ -167,19 +170,41 @@ const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubm
         </select>
       </div>
       
-      {formData.images && (
+      {formData.currentImages && formData.currentImages.length > 0 && (
         <div className="grid grid-cols-4 items-start gap-4">
-          <Label className="text-right pt-2">Obecne zdjęcia</Label>
+          <Label className="text-right pt-2">Zarządzaj zdjęciami</Label>
           <div className="col-span-3 flex flex-wrap gap-4">
-            {formData.images.split(',').map(url => url.trim()).filter(url => url).map((url, index) => (
-              <div key={index} className="relative w-24 h-24 border rounded-md overflow-hidden bg-gray-100">
+            {formData.currentImages.sort((a, b) => a.order - b.order).map((img, index) => (
+              <div key={img.id} className="relative w-24 h-24 border rounded-md overflow-hidden bg-gray-100 group">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt={`Product ${index}`} className="object-cover w-full h-full" />
+                <img src={img.url} alt={`Product ${index}`} className="object-cover w-full h-full" />
+                <div className="absolute top-0 right-0 p-1 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button type="button" onClick={() => onDeleteImage?.(img.id)} className="text-white hover:text-red-500">
+                        <Trash2 size={16} />
+                    </button>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 flex justify-between bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity p-1">
+                    <button type="button" disabled={index === 0} onClick={() => {
+                        const newImages = [...formData.currentImages];
+                        [newImages[index], newImages[index - 1]] = [newImages[index - 1], newImages[index]];
+                        // Update order property
+                        newImages.forEach((img, idx) => img.order = idx);
+                        onReorderImages?.(newImages);
+                    }} className="text-white hover:text-blue-500 disabled:opacity-30 px-1">
+                        &lt;
+                    </button>
+                    <button type="button" disabled={index === formData.currentImages.length - 1} onClick={() => {
+                        const newImages = [...formData.currentImages];
+                        [newImages[index], newImages[index + 1]] = [newImages[index + 1], newImages[index]];
+                        // Update order property
+                        newImages.forEach((img, idx) => img.order = idx);
+                        onReorderImages?.(newImages);
+                    }} className="text-white hover:text-blue-500 disabled:opacity-30 px-1">
+                        &gt;
+                    </button>
+                </div>
               </div>
             ))}
-            {formData.images.split(',').map(url => url.trim()).filter(url => url).length === 0 && (
-               <span className="text-muted-foreground text-sm py-2">Brak zdjęć</span>
-            )}
           </div>
         </div>
       )}
@@ -204,13 +229,18 @@ const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubm
           />
         </div>
       </div>
+
+      {formData.modelUrl && (
+        <div className="grid grid-cols-4 items-start gap-4">
+          <Label className="text-right pt-2">Podgląd modelu</Label>
+          <div className="col-span-3 h-[300px]">
+             <Product3DModel modelUrl={formData.modelUrl} />
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-4 items-center gap-4">
         <Label htmlFor="sizes" className="text-right">Rozmiary (oddzielone przecinkami)</Label>
         <Input id="sizes" name="sizes" value={formData.sizes} onChange={handleInputChange} className="col-span-3" placeholder="S, M, L, XL" />
-      </div>
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="images" className="text-right">Zdjęcia (URL, opcjonalnie)</Label>
-        <Textarea id="images" name="images" value={formData.images} onChange={handleInputChange} className="col-span-3" placeholder="http://..., http://..." />
       </div>
     </div>
     <DialogFooter>
@@ -384,7 +414,13 @@ export default function AdminPage() {
   };
 
   const handleFileChange = (file: File | null, field: 'imageFile' | 'modelFile') => {
-    setFormData(prev => ({ ...prev, [field]: file }));
+    setFormData(prev => {
+      const newState = { ...prev, [field]: file };
+      if (field === 'modelFile' && file) {
+        newState.modelUrl = URL.createObjectURL(file);
+      }
+      return newState;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -398,8 +434,10 @@ export default function AdminPage() {
     formDataToSend.append('price', formData.price);
     formDataToSend.append('collectionId', formData.collectionId);
     formDataToSend.append('sizes', formData.sizes);
-    formDataToSend.append('images', formData.images);
-    formDataToSend.append('modelUrl', formData.modelUrl);
+    
+    if (!formData.modelFile) {
+      formDataToSend.append('modelUrl', formData.modelUrl);
+    }
 
     if (formData.imageFile) {
       formDataToSend.append('imageFile', formData.imageFile);
@@ -442,7 +480,7 @@ export default function AdminPage() {
       price: product.price.toString(),
       collectionId: product.collectionId.toString(),
       modelUrl: product.modelUrl || '',
-      images: product.images.map(i => i.url).join(', '),
+      currentImages: product.images,
       sizes: product.sizes.map(s => s.size).join(', '),
       imageFile: null,
       modelFile: null,
@@ -590,6 +628,74 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteImage = async (imageId: number) => {
+    if (!confirm('Czy na pewno chcesz usunąć to zdjęcie?')) return;
+    
+    try {
+      const res = await fetch(`/api/images/${imageId}`, {
+        method: 'DELETE',
+      });
+      
+      if (res.ok) {
+        setFormData(prev => ({
+          ...prev,
+          currentImages: prev.currentImages.filter(img => img.id !== imageId)
+        }));
+        setProducts(prev => prev.map(p => {
+            if (p.id === editingId) {
+                return {
+                    ...p,
+                    images: p.images.filter(img => img.id !== imageId)
+                };
+            }
+            return p;
+        }));
+      } else {
+        alert('Nie udało się usunąć zdjęcia');
+      }
+    } catch (error) {
+      console.error("Error deleting image", error);
+      alert('Wystąpił błąd');
+    }
+  };
+
+  const handleReorderImages = async (newImages: { id: number; url: string; order: number }[]) => {
+    setFormData(prev => ({
+        ...prev,
+        currentImages: newImages
+    }));
+
+    if (editingId) {
+        try {
+            await fetch(`/api/products/${editingId}/images/reorder`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ images: newImages.map(img => img.id) }),
+            });
+            
+             setProducts(prev => prev.map(p => {
+                if (p.id === editingId) {
+                    return {
+                        ...p,
+                        images: newImages
+                    };
+                }
+                return p;
+            }));
+        } catch (error) {
+            console.error("Error reordering images", error);
+        }
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (formData.modelUrl && formData.modelUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(formData.modelUrl);
+      }
+    };
+  }, [formData.modelUrl]);
+
   return (
     <div className="min-h-screen bg-gray-50/50 p-8">
       {isInitialLoading ? (
@@ -637,6 +743,8 @@ export default function AdminPage() {
                   loading={loading}
                   collections={collections}
                   submitLabel="Utwórz produkt" 
+                  onDeleteImage={handleDeleteImage}
+                  onReorderImages={handleReorderImages}
                 />
               </DialogContent>
             </Dialog>
@@ -710,7 +818,9 @@ export default function AdminPage() {
               handleSubmit={handleSubmit}
               loading={loading}
               collections={collections}
-              submitLabel="Zapisz zmiany" 
+              submitLabel="Zapisz zmiany"
+              onDeleteImage={handleDeleteImage}
+              onReorderImages={handleReorderImages}
             />
           </DialogContent>
         </Dialog>

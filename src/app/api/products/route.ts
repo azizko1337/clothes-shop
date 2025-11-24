@@ -4,12 +4,23 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
   try {
     const products = await prisma.product.findMany({
-      include: {
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        composition: true,
+        price: true,
+        collectionId: true,
+        modelUrl: true,
+        modelMimeType: true,
         images: {
           select: {
             id: true,
-            // Don't select data to avoid large payload
-          }
+            order: true,
+          },
+          orderBy: {
+            order: 'asc',
+          },
         },
         sizes: true,
       },
@@ -20,14 +31,15 @@ export async function GET() {
       images: product.images.map(img => ({
         id: img.id,
         url: `/api/images/${img.id}`,
+        order: img.order,
       })),
-      modelUrl: product.modelData ? `/api/models/${product.id}` : product.modelUrl
+      modelUrl: product.modelMimeType ? `/api/models/${product.id}` : product.modelUrl
     }));
 
     return NextResponse.json(productsWithUrls);
   } catch (error) {
     console.error('Error fetching products:', error);
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch products', details: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }
 

@@ -31,3 +31,25 @@ export async function GET(
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const id = parseInt((await params).id);
+
+  if (isNaN(id)) {
+    return new NextResponse('Invalid ID', { status: 400 });
+  }
+
+  try {
+    await prisma.productImage.delete({
+      where: { id },
+    });
+
+    return new NextResponse('Image deleted', { status: 200 });
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
+  }
+}

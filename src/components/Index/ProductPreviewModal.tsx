@@ -10,7 +10,8 @@ import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 
 interface ProductPreviewModalProps {
-  product: Product & { images: { id: number }[] };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  product: Omit<Product, 'modelData'> & { modelData?: any; images: { id: number }[] };
   isOpen: boolean;
   onClose: () => void;
 }
@@ -18,8 +19,8 @@ interface ProductPreviewModalProps {
 export default function ProductPreviewModal({ product, isOpen, onClose }: ProductPreviewModalProps) {
   const { addItem } = useCart();
   // Determine if we have a model.
-  // We check if modelUrl is provided OR if modelData is present (not null).
-  const hasModel = !!product.modelUrl || (product.modelData !== null && product.modelData !== undefined);
+  // We check if modelUrl is provided OR if modelMimeType is present.
+  const hasModel = !!product.modelUrl || !!product.modelMimeType;
 
   const modelUrl = product.modelUrl || (hasModel ? `/api/models/${product.id}` : null);
   
