@@ -34,9 +34,9 @@ async function main() {
   // Create a collection
   const collection = await prisma.collection.create({
     data: {
-      name: 'Summer 2025',
-      description: 'The hottest looks for the summer.',
-      releaseDate: new Date('2025-06-01'),
+      name: 'LATO 2025',
+      description: 'Najgorętsze stylizacje na lato.',
+      releaseDate: new Date('2025-07-01'),
     },
   });
 
@@ -45,10 +45,10 @@ async function main() {
   // Create products
   const product1 = await prisma.product.create({
     data: {
-      name: 'Summer T-Shirt',
-      description: 'A cool t-shirt for hot days.',
-      composition: '100% Cotton',
-      price: 29.99,
+      name: 'Bluza z kapturem LATO 2025',
+      description: 'Stylowa bluza z kapturem idealna na letnie wieczory.',
+      composition: '100% Bawełna',
+      price: 199.99,
       collectionId: collection.id,
       sizes: {
         create: [
