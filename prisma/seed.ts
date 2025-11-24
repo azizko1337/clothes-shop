@@ -1,6 +1,8 @@
 import { PrismaClient } from '../src/generated/client/client';
 import { authenticator } from 'otplib';
 import 'dotenv/config';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -42,6 +44,12 @@ async function main() {
 
   console.log(`Created collection: ${collection.name}`);
 
+  const fixturesDir = path.join(__dirname, 'fixtures');
+  const image1 = fs.readFileSync(path.join(fixturesDir, 'product_image_1.jpg'));
+  const image2 = fs.readFileSync(path.join(fixturesDir, 'product_image_2.jpg'));
+  const image3 = fs.readFileSync(path.join(fixturesDir, 'product_image_3.jpg'));
+  const model3d = fs.readFileSync(path.join(fixturesDir, 'product_model.glb'));
+
   // Create products
   const product1 = await prisma.product.create({
     data: {
@@ -60,15 +68,24 @@ async function main() {
       images: {
         create: [
           { 
-            data: Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64'),
-            mimeType: 'image/gif'
+            data: image1,
+            mimeType: 'image/jpeg',
+            order: 0
           },
           { 
-            data: Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64'),
-            mimeType: 'image/gif'
+            data: image2,
+            mimeType: 'image/jpeg',
+            order: 1
+          },
+          { 
+            data: image3,
+            mimeType: 'image/jpeg',
+            order: 2
           },
         ],
       },
+      modelData: model3d,
+      modelMimeType: 'model/gltf-binary',
     },
   });
   
