@@ -85,6 +85,22 @@ export default async function Home() {
         </div>
 
         <ScrollDownButton />
+
+        {/* 3D Model Credits */}
+        <div className="absolute bottom-6 right-6 z-20 text-right font-mono text-[10px] tracking-widest text-zinc-500">
+          <div className="flex flex-col items-end gap-0.5 opacity-50 hover:opacity-100 transition-opacity duration-300">
+            <span className="uppercase text-zinc-600">Model 3D</span>
+            <a 
+              href="https://sketchfab.com/3d-models/toyota-trueno-ae86-initial-d-40c0a445f8fa42568c7ecf208b6d97bd" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-zinc-200 transition-colors"
+            >
+              Toyota AE86 Trueno autorstwa Flamestroke
+            </a>
+            <span className="text-zinc-600">Licencja: CC Attribution</span>
+          </div>
+        </div>
       </div>
 
       <AudioPlayer />

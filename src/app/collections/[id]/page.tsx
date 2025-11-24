@@ -94,7 +94,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
 
         {collection.products.length === 0 && (
             <div className="w-full py-24 text-center border border-dashed border-zinc-800 rounded-xl">
-                <p className="text-zinc-500 font-mono uppercase tracking-widest">No products found in this collection</p>
+                <p className="text-zinc-500 font-mono uppercase tracking-widest">Brak produktów w tej kolekcji</p>
             </div>
         )}
       </div>
