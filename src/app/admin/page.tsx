@@ -728,7 +728,7 @@ export default function AdminPage() {
                   <Plus className="mr-2 h-4 w-4" /> Dodaj produkt
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px]">
+              <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Dodaj nowy produkt</DialogTitle>
                   <DialogDescription>
@@ -804,7 +804,7 @@ export default function AdminPage() {
         </Card>
 
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Edytuj produkt</DialogTitle>
               <DialogDescription>
@@ -859,7 +859,7 @@ export default function AdminPage() {
                   <Plus className="mr-2 h-4 w-4" /> Dodaj kolekcję
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px]">
+              <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Dodaj nową kolekcję</DialogTitle>
                   <DialogDescription>
@@ -950,7 +950,7 @@ export default function AdminPage() {
         </Card>
 
         <Dialog open={isEditCollectionDialogOpen} onOpenChange={setIsEditCollectionDialogOpen}>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Edytuj kolekcję</DialogTitle>
               <DialogDescription>
@@ -968,7 +968,7 @@ export default function AdminPage() {
         </Dialog>
 
         <Dialog open={isEditOrderDialogOpen} onOpenChange={setIsEditOrderDialogOpen}>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Edytuj zamówienie</DialogTitle>
               <DialogDescription>
