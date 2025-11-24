@@ -100,7 +100,7 @@ export default async function Home() {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-                    <h2 className="text-sm font-mono text-zinc-400 uppercase tracking-widest">Latest Drop</h2>
+                    <h2 className="text-sm font-mono text-zinc-400 uppercase tracking-widest">NAJNOWSZY DROP</h2>
                   </div>
                   <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-500">
                     {latestCollection.name}
@@ -126,9 +126,9 @@ export default async function Home() {
             <section>
                <div className="mb-10 border-b border-zinc-800 pb-4 flex items-center justify-between">
                   <div>
-                    <h2 className="text-sm font-mono text-zinc-500 uppercase tracking-widest mb-1">Vault</h2>
+                    <h2 className="text-sm font-mono text-zinc-500 uppercase tracking-widest mb-1">Historia</h2>
                     <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tight text-zinc-300">
-                      Archive
+                      Archiwum kolekcji
                     </h1>
                   </div>
                   <div className="hidden md:block">

@@ -58,7 +58,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
             className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-colors mb-8 group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="uppercase tracking-widest text-xs font-mono">Back to Home</span>
+            <span className="uppercase tracking-widest text-xs font-mono">Strona główna</span>
           </Link>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
@@ -102,7 +102,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
       {/* Footer-like element */}
       <div className="w-full py-12 border-t border-zinc-900 text-center">
         <p className="text-zinc-600 text-xs font-mono uppercase tracking-widest">
-            chandra.movement / collection {String(collection.id).padStart(3, '0')}
+            chandra.movement / kolekcja {String(collection.id).padStart(3, '0')}
         </p>
       </div>
     </div>
