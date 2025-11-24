@@ -7,7 +7,7 @@ import ProductPreviewModal from "./ProductPreviewModal";
 
 interface ProductCardProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  product: Omit<Product, 'modelData'> & { modelData?: any; images: { id: number }[] };
+  product: Omit<Product, 'modelData'> & { modelData?: any; images: { id: number }[]; sizes: { id: number; size: string }[] };
 }
 
 export default function ProductCard({ product }: ProductCardProps) {

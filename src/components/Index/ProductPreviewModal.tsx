@@ -11,7 +11,7 @@ import { useCart } from "@/context/CartContext";
 
 interface ProductPreviewModalProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  product: Omit<Product, 'modelData'> & { modelData?: any; images: { id: number }[] };
+  product: Omit<Product, 'modelData'> & { modelData?: any; images: { id: number }[]; sizes: { id: number; size: string }[] };
   isOpen: boolean;
   onClose: () => void;
 }
@@ -28,10 +28,14 @@ export default function ProductPreviewModal({ product, isOpen, onClose }: Produc
   // If we have a model, we default to it.
   const [showModel, setShowModel] = useState(!!modelUrl);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(product.images[0]?.id || null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const handleAddToCart = () => {
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+      return;
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    addItem(product as any);
+    addItem(product as any, selectedSize || undefined);
     onClose();
   };
 
@@ -104,13 +108,36 @@ export default function ProductPreviewModal({ product, isOpen, onClose }: Produc
                 <p className="text-sm text-zinc-400">{product.composition}</p>
               </div>
             )}
+
+            {/* Size Selection */}
+            {product.sizes && product.sizes.length > 0 && (
+              <div>
+                <h4 className="font-semibold text-zinc-100 mb-2 uppercase tracking-wide text-sm">Rozmiar</h4>
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes.map((sizeObj) => (
+                    <button
+                      key={sizeObj.id}
+                      onClick={() => setSelectedSize(sizeObj.size)}
+                      className={`px-4 py-2 border text-sm font-mono transition-all ${
+                        selectedSize === sizeObj.size
+                          ? "border-white bg-white text-black"
+                          : "border-zinc-800 text-zinc-400 hover:border-zinc-600"
+                      }`}
+                    >
+                      {sizeObj.size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="mt-8 pt-6 border-t border-zinc-800">
             <Button 
-              className="w-full bg-white text-black hover:bg-zinc-200 font-bold tracking-wide h-12 text-lg" 
+              className="w-full bg-white text-black hover:bg-zinc-200 font-bold tracking-wide h-12 text-lg disabled:opacity-50 disabled:cursor-not-allowed" 
               size="lg"
               onClick={handleAddToCart}
+              disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
             >
               <ShoppingCart className="mr-2 h-5 w-5" />
               DODAJ DO KOSZYKA
