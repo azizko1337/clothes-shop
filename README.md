@@ -37,3 +37,10 @@ docker compose exec app npx prisma migrate deploy
 # Seedowanie bazy danych
 docker compose exec app npx prisma db seed
 ```
+
+### Resetowanie bazy danych
+Aby zresetować bazę danych (usunąć wszystkie dane, zaaplikować migracje i wykonać seedowanie):
+
+```bash
+docker compose exec app npx prisma migrate reset
+```
