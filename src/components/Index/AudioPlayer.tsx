@@ -211,7 +211,7 @@ function AudioPlayer(){
             <button
                 onClick={() => setIsExpanded(true)}
                 className={clsx(
-                    "fixed right-0 top-24 z-[100] p-3 bg-black/80 backdrop-blur-md text-accent rounded-l-xl border-y border-l border-neutral-800 shadow-2xl transition-transform duration-300",
+                    "fixed right-0 top-24 z-[100] p-3 bg-black/80 backdrop-blur-md text-accent rounded-l-xl border-y border-l border-neutral-800 shadow-2xl transition-transform duration-300 hover:bg-neutral-900/80",
                     isExpanded ? "translate-x-full" : "translate-x-0"
                 )}
                 aria-label="Otwórz odtwarzacz"

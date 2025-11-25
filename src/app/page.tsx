@@ -3,12 +3,10 @@ import Image from "next/image";
 import CarModel from "@/components/Model/CarModel";
 import AccordionsSection from "@/components/Index/AccordionsSection";
 import { ExternalLinkIcon } from "@/components/ui/icons/oi-external-link";
-import AudioPlayer from "@/components/Index/AudioPlayer";
 import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/Index/ProductCard";
 import CollectionCard from "@/components/Index/CollectionCard";
 import ScrollDownButton from "@/components/Index/ScrollDownButton";
-import CartTrigger from "@/components/Cart/CartTrigger";
 
 export default async function Home() {
   const latestCollection = await prisma.collection.findFirst({
@@ -59,7 +57,6 @@ export default async function Home() {
 
   return (
     <div>
-      <CartTrigger />
       {/* Sekcja HERO – przyklejona do góry */}
       <div className="w-full h-screen sticky top-0 z-0 bg-radial-[at_25%_25%] from-zinc-800 to-zinc-900 to-75%">
         <div className="w-full h-full absolute top-0 left-0">
@@ -102,8 +99,6 @@ export default async function Home() {
           </div>
         </div>
       </div>
-
-      <AudioPlayer />
 
       {/* Sekcja niżej – przykrywa HERO */}
       <div className="w-full min-h-screen relative z-10 bg-zinc-950 text-zinc-100">
