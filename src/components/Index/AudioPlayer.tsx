@@ -349,7 +349,8 @@ function AudioPlayer(){
 
                     <div className="flex justify-end w-full pt-3">
                         <a
-                            href="#"
+                            href="https://soundcloud.com/solina13"
+                            target="_blank"
                             className="flex gap-2 items-center hover:underline cursor-pointer text-[11px] tracking-wide text-neutral-300"
                             aria-label="Otwórz w SoundCloud"
                         >

@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/Index/ProductCard";
 import CollectionCard from "@/components/Index/CollectionCard";
 import ScrollDownButton from "@/components/Index/ScrollDownButton";
+import Link from "next/link";
 
 export default async function Home() {
   const latestCollection = await prisma.collection.findFirst({
@@ -78,7 +79,10 @@ export default async function Home() {
             />
           </div>
 
-          <h1 className="flex gap-2 hover:underline cursor-pointer tracking-wide">chandra.movement</h1>
+          <Link href="https://www.instagram.com/chandra.movement/" 
+              className="flex gap-2 hover:underline cursor-pointer tracking-wide"
+              target="_blank"
+              >chandra.movement</Link>
         </div>
 
         <ScrollDownButton />
