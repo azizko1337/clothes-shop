@@ -49,6 +49,7 @@ export type ProductMinAggregateOutputType = {
   modelMimeType: string | null
   glbAttribution: string | null
   glbLink: string | null
+  isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   collectionId: number | null
@@ -65,6 +66,7 @@ export type ProductMaxAggregateOutputType = {
   modelMimeType: string | null
   glbAttribution: string | null
   glbLink: string | null
+  isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   collectionId: number | null
@@ -81,6 +83,7 @@ export type ProductCountAggregateOutputType = {
   modelMimeType: number
   glbAttribution: number
   glbLink: number
+  isActive: number
   createdAt: number
   updatedAt: number
   collectionId: number
@@ -111,6 +114,7 @@ export type ProductMinAggregateInputType = {
   modelMimeType?: true
   glbAttribution?: true
   glbLink?: true
+  isActive?: true
   createdAt?: true
   updatedAt?: true
   collectionId?: true
@@ -127,6 +131,7 @@ export type ProductMaxAggregateInputType = {
   modelMimeType?: true
   glbAttribution?: true
   glbLink?: true
+  isActive?: true
   createdAt?: true
   updatedAt?: true
   collectionId?: true
@@ -143,6 +148,7 @@ export type ProductCountAggregateInputType = {
   modelMimeType?: true
   glbAttribution?: true
   glbLink?: true
+  isActive?: true
   createdAt?: true
   updatedAt?: true
   collectionId?: true
@@ -246,6 +252,7 @@ export type ProductGroupByOutputType = {
   modelMimeType: string | null
   glbAttribution: string | null
   glbLink: string | null
+  isActive: boolean
   createdAt: Date
   updatedAt: Date
   collectionId: number
@@ -285,6 +292,7 @@ export type ProductWhereInput = {
   modelMimeType?: Prisma.StringNullableFilter<"Product"> | string | null
   glbAttribution?: Prisma.StringNullableFilter<"Product"> | string | null
   glbLink?: Prisma.StringNullableFilter<"Product"> | string | null
+  isActive?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   collectionId?: Prisma.IntFilter<"Product"> | number
@@ -305,6 +313,7 @@ export type ProductOrderByWithRelationInput = {
   modelMimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   glbAttribution?: Prisma.SortOrderInput | Prisma.SortOrder
   glbLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   collectionId?: Prisma.SortOrder
@@ -328,6 +337,7 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   modelMimeType?: Prisma.StringNullableFilter<"Product"> | string | null
   glbAttribution?: Prisma.StringNullableFilter<"Product"> | string | null
   glbLink?: Prisma.StringNullableFilter<"Product"> | string | null
+  isActive?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   collectionId?: Prisma.IntFilter<"Product"> | number
@@ -348,6 +358,7 @@ export type ProductOrderByWithAggregationInput = {
   modelMimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   glbAttribution?: Prisma.SortOrderInput | Prisma.SortOrder
   glbLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   collectionId?: Prisma.SortOrder
@@ -372,6 +383,7 @@ export type ProductScalarWhereWithAggregatesInput = {
   modelMimeType?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   glbAttribution?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   glbLink?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
+  isActive?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   collectionId?: Prisma.IntWithAggregatesFilter<"Product"> | number
@@ -387,6 +399,7 @@ export type ProductCreateInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.ProductImageCreateNestedManyWithoutProductInput
@@ -406,6 +419,7 @@ export type ProductUncheckedCreateInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   collectionId: number
@@ -424,6 +438,7 @@ export type ProductUpdateInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.ProductImageUpdateManyWithoutProductNestedInput
@@ -443,6 +458,7 @@ export type ProductUncheckedUpdateInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collectionId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -462,6 +478,7 @@ export type ProductCreateManyInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   collectionId: number
@@ -477,6 +494,7 @@ export type ProductUpdateManyMutationInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -492,6 +510,7 @@ export type ProductUncheckedUpdateManyInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collectionId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -508,6 +527,7 @@ export type ProductCountOrderByAggregateInput = {
   modelMimeType?: Prisma.SortOrder
   glbAttribution?: Prisma.SortOrder
   glbLink?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   collectionId?: Prisma.SortOrder
@@ -530,6 +550,7 @@ export type ProductMaxOrderByAggregateInput = {
   modelMimeType?: Prisma.SortOrder
   glbAttribution?: Prisma.SortOrder
   glbLink?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   collectionId?: Prisma.SortOrder
@@ -546,6 +567,7 @@ export type ProductMinOrderByAggregateInput = {
   modelMimeType?: Prisma.SortOrder
   glbAttribution?: Prisma.SortOrder
   glbLink?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   collectionId?: Prisma.SortOrder
@@ -586,6 +608,10 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type NullableBytesFieldUpdateOperationsInput = {
   set?: runtime.Bytes | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type ProductCreateNestedOneWithoutImagesInput = {
@@ -682,6 +708,7 @@ export type ProductCreateWithoutImagesInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   sizes?: Prisma.ProductSizeCreateNestedManyWithoutProductInput
@@ -700,6 +727,7 @@ export type ProductUncheckedCreateWithoutImagesInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   collectionId: number
@@ -733,6 +761,7 @@ export type ProductUpdateWithoutImagesInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sizes?: Prisma.ProductSizeUpdateManyWithoutProductNestedInput
@@ -751,6 +780,7 @@ export type ProductUncheckedUpdateWithoutImagesInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collectionId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -768,6 +798,7 @@ export type ProductCreateWithoutSizesInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.ProductImageCreateNestedManyWithoutProductInput
@@ -786,6 +817,7 @@ export type ProductUncheckedCreateWithoutSizesInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   collectionId: number
@@ -819,6 +851,7 @@ export type ProductUpdateWithoutSizesInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.ProductImageUpdateManyWithoutProductNestedInput
@@ -837,6 +870,7 @@ export type ProductUncheckedUpdateWithoutSizesInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collectionId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -854,6 +888,7 @@ export type ProductCreateWithoutCollectionInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.ProductImageCreateNestedManyWithoutProductInput
@@ -872,6 +907,7 @@ export type ProductUncheckedCreateWithoutCollectionInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -918,6 +954,7 @@ export type ProductScalarWhereInput = {
   modelMimeType?: Prisma.StringNullableFilter<"Product"> | string | null
   glbAttribution?: Prisma.StringNullableFilter<"Product"> | string | null
   glbLink?: Prisma.StringNullableFilter<"Product"> | string | null
+  isActive?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   collectionId?: Prisma.IntFilter<"Product"> | number
@@ -933,6 +970,7 @@ export type ProductCreateWithoutOrderItemsInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.ProductImageCreateNestedManyWithoutProductInput
@@ -951,6 +989,7 @@ export type ProductUncheckedCreateWithoutOrderItemsInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   collectionId: number
@@ -984,6 +1023,7 @@ export type ProductUpdateWithoutOrderItemsInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.ProductImageUpdateManyWithoutProductNestedInput
@@ -1002,6 +1042,7 @@ export type ProductUncheckedUpdateWithoutOrderItemsInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collectionId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1020,6 +1061,7 @@ export type ProductCreateManyCollectionInput = {
   modelMimeType?: string | null
   glbAttribution?: string | null
   glbLink?: string | null
+  isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1034,6 +1076,7 @@ export type ProductUpdateWithoutCollectionInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.ProductImageUpdateManyWithoutProductNestedInput
@@ -1052,6 +1095,7 @@ export type ProductUncheckedUpdateWithoutCollectionInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -1070,6 +1114,7 @@ export type ProductUncheckedUpdateManyWithoutCollectionInput = {
   modelMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbAttribution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   glbLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1134,6 +1179,7 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   modelMimeType?: boolean
   glbAttribution?: boolean
   glbLink?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   collectionId?: boolean
@@ -1155,6 +1201,7 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   modelMimeType?: boolean
   glbAttribution?: boolean
   glbLink?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   collectionId?: boolean
@@ -1172,6 +1219,7 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   modelMimeType?: boolean
   glbAttribution?: boolean
   glbLink?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   collectionId?: boolean
@@ -1189,12 +1237,13 @@ export type ProductSelectScalar = {
   modelMimeType?: boolean
   glbAttribution?: boolean
   glbLink?: boolean
+  isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   collectionId?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "composition" | "price" | "modelUrl" | "modelData" | "modelMimeType" | "glbAttribution" | "glbLink" | "createdAt" | "updatedAt" | "collectionId", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "composition" | "price" | "modelUrl" | "modelData" | "modelMimeType" | "glbAttribution" | "glbLink" | "isActive" | "createdAt" | "updatedAt" | "collectionId", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   images?: boolean | Prisma.Product$imagesArgs<ExtArgs>
   sizes?: boolean | Prisma.Product$sizesArgs<ExtArgs>
@@ -1228,6 +1277,7 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     modelMimeType: string | null
     glbAttribution: string | null
     glbLink: string | null
+    isActive: boolean
     createdAt: Date
     updatedAt: Date
     collectionId: number
@@ -1668,6 +1718,7 @@ export interface ProductFieldRefs {
   readonly modelMimeType: Prisma.FieldRef<"Product", 'String'>
   readonly glbAttribution: Prisma.FieldRef<"Product", 'String'>
   readonly glbLink: Prisma.FieldRef<"Product", 'String'>
+  readonly isActive: Prisma.FieldRef<"Product", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly collectionId: Prisma.FieldRef<"Product", 'Int'>

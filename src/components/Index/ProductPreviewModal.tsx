@@ -154,10 +154,10 @@ export default function ProductPreviewModal({ product, isOpen, onClose }: Produc
               className="w-full bg-white text-black hover:bg-zinc-200 font-bold tracking-wide h-12 text-lg disabled:opacity-50 disabled:cursor-not-allowed" 
               size="lg"
               onClick={handleAddToCart}
-              disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
+              disabled={!product.isActive || (product.sizes && product.sizes.length > 0 && !selectedSize)}
             >
               <ShoppingCart className="mr-2 h-5 w-5" />
-              DODAJ DO KOSZYKA
+              {product.isActive ? "DODAJ DO KOSZYKA" : "PRODUKT NIEDOSTĘPNY"}
             </Button>
           </div>
         </div>

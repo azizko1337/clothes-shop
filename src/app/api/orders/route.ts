@@ -54,6 +54,10 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: `Product with id ${item.productId} not found` }, { status: 400 });
       }
 
+      if (!product.isActive) {
+        return NextResponse.json({ error: `Product "${product.name}" is no longer available` }, { status: 400 });
+      }
+
       const itemTotal = product.price * item.quantity;
       totalProductsPrice += itemTotal;
 

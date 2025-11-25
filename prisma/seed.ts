@@ -130,7 +130,8 @@ async function main() {
                 modelData: modelData,
                 modelMimeType: modelMimeType,
                 glbAttribution: glbAttribution,
-                glbLink: glbLink
+                glbLink: glbLink,
+                isActive: true
             }
         });
         console.log(`Created product: ${product.name}`);

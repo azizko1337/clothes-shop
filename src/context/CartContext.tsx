@@ -44,6 +44,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items]);
 
   const addItem = (product: Product & { images: { id: number }[] }, size?: string) => {
+    if (!product.isActive) return;
     setItems((prevItems) => {
       const existingItemIndex = prevItems.findIndex(
         (item) => item.product.id === product.id && item.size === size

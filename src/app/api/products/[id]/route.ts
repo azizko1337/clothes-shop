@@ -37,6 +37,7 @@ export async function PUT(
     const modelUrl = formData.get('modelUrl') as string;
     const glbAttribution = formData.get('glbAttribution') as string;
     const glbLink = formData.get('glbLink') as string;
+    const isActive = formData.get('isActive') === 'true';
     const sizes = (formData.get('sizes') as string)?.split(',').map(s => s.trim()).filter(s => s) || [];
     
     const imageFile = formData.get('imageFile') as File | null;
@@ -55,6 +56,7 @@ export async function PUT(
           modelUrl,
           glbAttribution,
           glbLink,
+          isActive,
       };
 
       if (modelFile) {

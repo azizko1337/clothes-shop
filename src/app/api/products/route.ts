@@ -15,6 +15,7 @@ export async function GET() {
         modelMimeType: true,
         glbAttribution: true,
         glbLink: true,
+        isActive: true,
         images: {
           select: {
             id: true,
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
     const modelUrl = formData.get('modelUrl') as string;
     const glbAttribution = formData.get('glbAttribution') as string;
     const glbLink = formData.get('glbLink') as string;
+    const isActive = formData.get('isActive') === 'true';
     const sizes = (formData.get('sizes') as string)?.split(',').map(s => s.trim()).filter(s => s) || [];
     
     const imageFile = formData.get('imageFile') as File | null;
@@ -91,6 +93,7 @@ export async function POST(request: Request) {
         modelUrl,
         glbAttribution,
         glbLink,
+        isActive,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         modelData: modelData as any,
         modelMimeType,

@@ -92,6 +92,7 @@ export const ProductScalarFieldEnum = {
   modelMimeType: 'modelMimeType',
   glbAttribution: 'glbAttribution',
   glbLink: 'glbLink',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   collectionId: 'collectionId'

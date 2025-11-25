@@ -49,6 +49,7 @@ interface Product {
   modelUrl?: string;
   glbAttribution?: string;
   glbLink?: string;
+  isActive: boolean;
   sizes: { size: string }[];
   images: { id: number; url: string; order: number }[];
 }
@@ -62,6 +63,7 @@ interface ProductFormData {
   modelUrl: string;
   glbAttribution: string;
   glbLink: string;
+  isActive: boolean;
   sizes: string; // comma separated
   imageFile: File | null;
   modelFile: File | null;
@@ -77,6 +79,7 @@ const initialFormData: ProductFormData = {
   modelUrl: '',
   glbAttribution: '',
   glbLink: '',
+  isActive: true,
   sizes: '',
   imageFile: null,
   modelFile: null,
@@ -270,6 +273,22 @@ const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubm
       <div className="grid grid-cols-4 items-center gap-4">
         <Label htmlFor="sizes" className="text-right">Rozmiary (oddzielone przecinkami)</Label>
         <Input id="sizes" name="sizes" value={formData.sizes} onChange={handleInputChange} className="col-span-3" placeholder="S, M, L, XL" />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="isActive" className="text-right">Aktywny</Label>
+        <div className="col-span-3 flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="isActive"
+            name="isActive"
+            checked={formData.isActive}
+            onChange={handleInputChange}
+            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+          />
+          <label htmlFor="isActive" className="text-sm text-gray-600">
+            Produkt dostępny do zakupu
+          </label>
+        </div>
       </div>
     </div>
     <DialogFooter>
@@ -465,8 +484,12 @@ export default function AdminPage() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : value 
+    }));
   };
 
   const handleFileChange = (file: File | null, field: 'imageFile' | 'modelFile') => {
@@ -492,6 +515,7 @@ export default function AdminPage() {
     formDataToSend.append('sizes', formData.sizes);
     formDataToSend.append('glbAttribution', formData.glbAttribution);
     formDataToSend.append('glbLink', formData.glbLink);
+    formDataToSend.append('isActive', String(formData.isActive));
     
     if (!formData.modelFile) {
       formDataToSend.append('modelUrl', formData.modelUrl);
@@ -540,6 +564,7 @@ export default function AdminPage() {
       modelUrl: product.modelUrl || '',
       glbAttribution: product.glbAttribution || '',
       glbLink: product.glbLink || '',
+      isActive: product.isActive,
       currentImages: product.images,
       sizes: product.sizes.map(s => s.size).join(', '),
       imageFile: null,
@@ -865,6 +890,7 @@ export default function AdminPage() {
                   <TableHead className="hidden md:table-cell">Opis</TableHead>
                   <TableHead className="hidden md:table-cell">Skład</TableHead>
                   <TableHead>Rozmiary</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead className="text-right">Akcje</TableHead>
                 </TableRow>
               </TableHeader>
@@ -885,6 +911,11 @@ export default function AdminPage() {
                           </span>
                         ))}
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${product.isActive ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-red-50 text-red-700 ring-red-600/20'}`}>
+                        {product.isActive ? 'Aktywny' : 'Nieaktywny'}
+                      </span>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
