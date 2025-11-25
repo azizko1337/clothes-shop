@@ -1,4 +1,3 @@
-
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ProductCard from "@/components/Index/ProductCard";
@@ -28,6 +27,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
           modelMimeType: true,
           glbAttribution: true,
           glbLink: true,
+          isActive: true,
           createdAt: true,
           updatedAt: true,
           collectionId: true,
