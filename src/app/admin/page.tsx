@@ -47,6 +47,8 @@ interface Product {
   price: number;
   collectionId: number;
   modelUrl?: string;
+  glbAttribution?: string;
+  glbLink?: string;
   sizes: { size: string }[];
   images: { id: number; url: string; order: number }[];
 }
@@ -58,6 +60,8 @@ interface ProductFormData {
   price: string;
   collectionId: string;
   modelUrl: string;
+  glbAttribution: string;
+  glbLink: string;
   sizes: string; // comma separated
   imageFile: File | null;
   modelFile: File | null;
@@ -71,6 +75,8 @@ const initialFormData: ProductFormData = {
   price: '',
   collectionId: '',
   modelUrl: '',
+  glbAttribution: '',
+  glbLink: '',
   sizes: '',
   imageFile: null,
   modelFile: null,
@@ -228,6 +234,15 @@ const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubm
             label="Upuść model .glb tutaj" 
           />
         </div>
+      </div>
+
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="glbAttribution" className="text-right">Atrybucja modelu (tekst)</Label>
+        <Input id="glbAttribution" name="glbAttribution" value={formData.glbAttribution} onChange={handleInputChange} className="col-span-3" placeholder="np. Toyota AE86 Trueno autorstwa Flamestroke" />
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="glbLink" className="text-right">Link do modelu</Label>
+        <Input id="glbLink" name="glbLink" value={formData.glbLink} onChange={handleInputChange} className="col-span-3" placeholder="https://sketchfab.com/..." />
       </div>
 
       {formData.modelUrl && (
@@ -434,6 +449,8 @@ export default function AdminPage() {
     formDataToSend.append('price', formData.price);
     formDataToSend.append('collectionId', formData.collectionId);
     formDataToSend.append('sizes', formData.sizes);
+    formDataToSend.append('glbAttribution', formData.glbAttribution);
+    formDataToSend.append('glbLink', formData.glbLink);
     
     if (!formData.modelFile) {
       formDataToSend.append('modelUrl', formData.modelUrl);
@@ -480,6 +497,8 @@ export default function AdminPage() {
       price: product.price.toString(),
       collectionId: product.collectionId.toString(),
       modelUrl: product.modelUrl || '',
+      glbAttribution: product.glbAttribution || '',
+      glbLink: product.glbLink || '',
       currentImages: product.images,
       sizes: product.sizes.map(s => s.size).join(', '),
       imageFile: null,

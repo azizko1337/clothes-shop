@@ -13,6 +13,8 @@ export async function GET() {
         collectionId: true,
         modelUrl: true,
         modelMimeType: true,
+        glbAttribution: true,
+        glbLink: true,
         images: {
           select: {
             id: true,
@@ -52,6 +54,8 @@ export async function POST(request: Request) {
     const price = parseFloat(formData.get('price') as string);
     const collectionId = parseInt(formData.get('collectionId') as string);
     const modelUrl = formData.get('modelUrl') as string;
+    const glbAttribution = formData.get('glbAttribution') as string;
+    const glbLink = formData.get('glbLink') as string;
     const sizes = (formData.get('sizes') as string)?.split(',').map(s => s.trim()).filter(s => s) || [];
     
     const imageFile = formData.get('imageFile') as File | null;
@@ -85,6 +89,8 @@ export async function POST(request: Request) {
         price,
         collectionId,
         modelUrl,
+        glbAttribution,
+        glbLink,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         modelData: modelData as any,
         modelMimeType,

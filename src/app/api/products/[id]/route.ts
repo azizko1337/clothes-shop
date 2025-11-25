@@ -35,6 +35,8 @@ export async function PUT(
     const price = parseFloat(formData.get('price') as string);
     const collectionId = parseInt(formData.get('collectionId') as string);
     const modelUrl = formData.get('modelUrl') as string;
+    const glbAttribution = formData.get('glbAttribution') as string;
+    const glbLink = formData.get('glbLink') as string;
     const sizes = (formData.get('sizes') as string)?.split(',').map(s => s.trim()).filter(s => s) || [];
     
     const imageFile = formData.get('imageFile') as File | null;
@@ -51,6 +53,8 @@ export async function PUT(
           price,
           collectionId,
           modelUrl,
+          glbAttribution,
+          glbLink,
       };
 
       if (modelFile) {

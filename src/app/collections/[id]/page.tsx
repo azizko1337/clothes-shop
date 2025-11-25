@@ -26,6 +26,8 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
           price: true,
           modelUrl: true,
           modelMimeType: true,
+          glbAttribution: true,
+          glbLink: true,
           createdAt: true,
           updatedAt: true,
           collectionId: true,

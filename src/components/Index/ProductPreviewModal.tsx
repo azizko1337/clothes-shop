@@ -47,7 +47,24 @@ export default function ProductPreviewModal({ product, isOpen, onClose }: Produc
         <div className="w-full md:w-1/2 bg-black/20 p-6 flex flex-col gap-4">
           <div className="aspect-square relative rounded-xl overflow-hidden border border-zinc-800 bg-black/40">
             {showModel && modelUrl ? (
-               <Product3DModel modelUrl={modelUrl} />
+               <>
+                 <Product3DModel modelUrl={modelUrl} />
+                 {product.glbAttribution && product.glbLink && (
+                    <div className="absolute bottom-4 right-4 z-20 text-right font-mono text-[10px] tracking-widest text-zinc-500 pointer-events-none">
+                      <div className="flex flex-col items-end gap-0.5 opacity-50 hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
+                        <span className="uppercase text-zinc-600">Model 3D</span>
+                        <a 
+                          href={product.glbLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="hover:text-zinc-200 transition-colors"
+                        >
+                          {product.glbAttribution}
+                        </a>
+                      </div>
+                    </div>
+                 )}
+               </>
             ) : (
                selectedImageId ? (
                  <Image 

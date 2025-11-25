@@ -90,6 +90,8 @@ export const ProductScalarFieldEnum = {
   modelUrl: 'modelUrl',
   modelData: 'modelData',
   modelMimeType: 'modelMimeType',
+  glbAttribution: 'glbAttribution',
+  glbLink: 'glbLink',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   collectionId: 'collectionId'

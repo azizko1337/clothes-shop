@@ -28,6 +28,8 @@ model Product {
   modelUrl    String?
   modelData   Bytes?
   modelMimeType String?
+  glbAttribution String?
+  glbLink        String?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   images      ProductImage[]
