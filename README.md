@@ -7,6 +7,9 @@ Stanowi on zaliczenie modułu WIG,
 ## Seedowanie bazy danych
 - `npx prisma db seed`
 
+## Pobieranie tokenu TOTP dla admina
+- `docker compose exec app npx tsx prisma/get-admin-totp.ts`
+
 ## Uruchamianie z Dockerem
 
 ### Tryb Development
