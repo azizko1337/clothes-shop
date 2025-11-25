@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, ArrowLeft } from "lucide-react";
+import { ShoppingBag, ArrowLeft, CheckCircle2 } from "lucide-react";
 import CartItem from "./CartItem";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,19 +14,34 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export default function CartSheet() {
   const { isOpen, closeCart, items, total, clearCart } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
+  const [blikCode, setBlikCode] = useState("");
+  const [parcelLockerCode, setParcelLockerCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      const fullAddress = parcelLockerCode 
+        ? `${address}\nKod paczkomatu: ${parcelLockerCode}`
+        : address;
+
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: {
@@ -38,7 +53,7 @@ export default function CartSheet() {
             quantity: item.quantity,
             size: item.size
           })),
-          address,
+          address: fullAddress,
           email
         }),
       });
@@ -52,7 +67,9 @@ export default function CartSheet() {
       setIsCheckingOut(false);
       setAddress("");
       setEmail("");
-      alert("Zamówienie zostało złożone pomyślnie!");
+      setBlikCode("");
+      setParcelLockerCode("");
+      setShowSuccessDialog(true);
     } catch (error) {
       console.error(error);
       alert("Wystąpił błąd podczas składania zamówienia.");
@@ -114,6 +131,33 @@ export default function CartSheet() {
                 placeholder="Ulica, numer domu, kod pocztowy, miasto"
               />
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="parcelLocker">Kod paczkomatu (opcjonalnie)</Label>
+              <Input
+                id="parcelLocker"
+                value={parcelLockerCode}
+                onChange={(e) => setParcelLockerCode(e.target.value)}
+                className="bg-zinc-900 border-zinc-800"
+                placeholder="np. WAW123"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="blik">Kod BLIK</Label>
+              <Input
+                id="blik"
+                value={blikCode}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+                  setBlikCode(val);
+                }}
+                className="bg-zinc-900 border-zinc-800"
+                placeholder="000 000"
+                maxLength={6}
+                inputMode="numeric"
+              />
+            </div>
             
             <div className="mt-auto space-y-4">
                <div className="flex justify-between items-center border-t border-zinc-800 pt-4">
@@ -171,6 +215,30 @@ export default function CartSheet() {
           </>
         )}
       </SheetContent>
+
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md bg-zinc-950 border-zinc-800 text-zinc-100">
+          <DialogHeader>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 mb-4">
+              <CheckCircle2 className="h-6 w-6 text-green-500" />
+            </div>
+            <DialogTitle className="text-center text-xl">Zamówienie przyjęte!</DialogTitle>
+            <DialogDescription className="text-center text-zinc-400">
+              Dziękujemy za zakupy. Potwierdzenie zamówienia zostało wysłane na Twój adres email.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center">
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full sm:w-auto bg-white text-black hover:bg-zinc-200"
+              onClick={() => setShowSuccessDialog(false)}
+            >
+              Wróć do sklepu
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Sheet>
   );
 }
