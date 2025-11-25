@@ -145,10 +145,11 @@ interface ProductFormProps {
   collections: Collection[];
   submitLabel: string;
   onDeleteImage?: (imageId: number) => void;
+  onDeleteModel?: () => void;
   onReorderImages?: (images: { id: number; url: string; order: number }[]) => void;
 }
 
-const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubmit, loading, collections, submitLabel, onDeleteImage, onReorderImages }: ProductFormProps) => (
+const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubmit, loading, collections, submitLabel, onDeleteImage, onDeleteModel, onReorderImages }: ProductFormProps) => (
   <form onSubmit={handleSubmit} className="space-y-4">
     <div className="grid gap-4 py-4">
       <div className="grid grid-cols-4 items-center gap-4">
@@ -256,8 +257,13 @@ const ProductForm = ({ formData, handleInputChange, handleFileChange, handleSubm
       {formData.modelUrl && (
         <div className="grid grid-cols-4 items-start gap-4">
           <Label className="text-right pt-2">Podgląd modelu</Label>
-          <div className="col-span-3 h-[300px]">
+          <div className="col-span-3 h-[300px] relative group border rounded-md overflow-hidden">
              <Product3DModel modelUrl={formData.modelUrl} />
+             <div className="absolute top-0 right-0 p-2 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                <button type="button" onClick={onDeleteModel} className="text-white hover:text-red-500" title="Usuń model">
+                    <Trash2 size={20} />
+                </button>
+             </div>
           </div>
         </div>
       )}
@@ -742,6 +748,52 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteModel = async () => {
+    if (!confirm('Czy na pewno chcesz usunąć model 3D?')) return;
+
+    if (editingId) {
+        try {
+            const res = await fetch(`/api/products/${editingId}/model`, {
+                method: 'DELETE',
+            });
+
+            if (res.ok) {
+                setFormData(prev => ({
+                    ...prev,
+                    modelUrl: '',
+                    modelFile: null,
+                    glbAttribution: '',
+                    glbLink: ''
+                }));
+                setProducts(prev => prev.map(p => {
+                    if (p.id === editingId) {
+                        return {
+                            ...p,
+                            modelUrl: undefined,
+                            glbAttribution: undefined,
+                            glbLink: undefined
+                        };
+                    }
+                    return p;
+                }));
+            } else {
+                alert('Nie udało się usunąć modelu');
+            }
+        } catch (error) {
+            console.error("Error deleting model", error);
+            alert('Wystąpił błąd');
+        }
+    } else {
+        setFormData(prev => ({
+            ...prev,
+            modelUrl: '',
+            modelFile: null,
+            glbAttribution: '',
+            glbLink: ''
+        }));
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (formData.modelUrl && formData.modelUrl.startsWith('blob:')) {
@@ -798,6 +850,7 @@ export default function AdminPage() {
                   collections={collections}
                   submitLabel="Utwórz produkt" 
                   onDeleteImage={handleDeleteImage}
+                  onDeleteModel={handleDeleteModel}
                   onReorderImages={handleReorderImages}
                 />
               </DialogContent>
@@ -874,6 +927,7 @@ export default function AdminPage() {
               collections={collections}
               submitLabel="Zapisz zmiany"
               onDeleteImage={handleDeleteImage}
+              onDeleteModel={handleDeleteModel}
               onReorderImages={handleReorderImages}
             />
           </DialogContent>
