@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   keywords: ["chandra", "sklep", "store", "oficjalny sklep", "gadżety", "ubrania", "koszulki", "hoodie"],
 };
 
+export const revalidate = 0;
+
 export default function RootLayout({
   children,
 }: Readonly<{
