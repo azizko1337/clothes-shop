@@ -41,7 +41,7 @@ export default function ProductPreviewModal({ product, isOpen, onClose }: Produc
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-6xl bg-zinc-950 border-zinc-800 text-zinc-100 max-h-[90vh] overflow-y-auto p-0 gap-0 flex flex-col md:flex-row">
+      <DialogContent closeClassName="text-zinc-400 hover:text-white" className="sm:max-w-6xl bg-zinc-950 border-zinc-800 text-zinc-100 max-h-[90vh] overflow-y-auto p-0 gap-0 flex flex-col md:flex-row">
         
         {/* Left Side: Visuals */}
         <div className="w-full md:w-1/2 bg-black/20 p-6 flex flex-col gap-4">

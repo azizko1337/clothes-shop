@@ -1,6 +1,7 @@
 "use client"
 
 import { FaMusic, FaXmark } from "react-icons/fa6";
+import { X } from "lucide-react";
 import { useRef, useState, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import { CiPlay1, CiPause1 } from "react-icons/ci";
@@ -232,9 +233,9 @@ function AudioPlayer(){
             )}>
                 <button 
                     onClick={() => setIsExpanded(false)}
-                    className="absolute top-6 right-6 text-neutral-400 hover:text-white p-2"
+                    className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none text-white"
                 >
-                    <FaXmark size={24} />
+                    <X className="h-4 w-4" />
                 </button>
 
                 <div className="w-72 relative flex flex-col items-center">
