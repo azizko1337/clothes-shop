@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus, Pencil, Trash2, LogOut } from 'lucide-react'
+import { Plus, Pencil, Trash2, LogOut, RefreshCw } from 'lucide-react'
 import { Spinner } from "@/components/ui/spinner"
 import { FileUpload } from "@/components/ui/file-upload"
 import Product3DModel from "@/components/Model/Product3DModel"
@@ -478,6 +478,12 @@ export default function AdminPage() {
     }
   };
 
+  const handleRefresh = async () => {
+    setIsInitialLoading(true);
+    await Promise.all([fetchProducts(), fetchCollections(), fetchOrders()]);
+    setIsInitialLoading(false);
+  };
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/login');
@@ -841,6 +847,9 @@ export default function AdminPage() {
             <p className="text-muted-foreground">Zarządzaj produktami i magazynem.</p>
           </div>
           <div className="flex gap-4">
+            <Button variant="outline" onClick={handleRefresh}>
+              <RefreshCw className="mr-2 h-4 w-4" /> Odśwież
+            </Button>
             <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" /> Wyloguj
             </Button>
