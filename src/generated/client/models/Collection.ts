@@ -1128,6 +1128,7 @@ export type CollectionCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many Collections.
    */
   data: Prisma.CollectionCreateManyInput | Prisma.CollectionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1146,6 +1147,7 @@ export type CollectionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many Collections.
    */
   data: Prisma.CollectionCreateManyInput | Prisma.CollectionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

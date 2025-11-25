@@ -1,18 +1,30 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: clothes_shop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
   app:
     build:
       context: .
       target: dev
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/clothes_shop?schema=public
     ports:
       - "3000:3000"
-    environment:
-      - DATABASE_URL=file:/app/prisma/dev.db
     volumes:
       - .:/app
       - /app/node_modules
       - /app/.next
-    networks:
-      - network
-networks:
-  network:
-    driver: bridge
+
+volumes:
+  postgres-data:

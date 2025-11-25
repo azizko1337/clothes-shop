@@ -11,7 +11,7 @@ RUN apk add --no-cache libc6-compat
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Set dummy DATABASE_URL for build time
-ENV DATABASE_URL="file:/app/prisma/dev.db"
+ENV DATABASE_URL="postgresql://postgres:postgres@postgres:5432/clothes_shop?schema=public"
 # Generate prisma client
 RUN npx prisma generate
 CMD ["sh", "-c", "npx prisma generate && npm run dev"]
@@ -20,7 +20,7 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Set dummy DATABASE_URL for build time
-ENV DATABASE_URL="file:/app/prisma/dev.db"
+ENV DATABASE_URL="postgresql://postgres:postgres@postgres:5432/clothes_shop?schema=public"
 RUN npx prisma generate
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build

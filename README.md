@@ -25,7 +25,7 @@ Aplikacja będzie dostępna pod adresem `http://localhost:3000`.
 Aby uruchomić aplikację w trybie produkcyjnym:
 
 ```bash
-docker compose up --build -d
+docker compose up -d postgres && docker compose up app
 ```
 
 Przed uruchomieniem musi istnieć plik bazy danych! Można to uzyskać np. przy pomocy skryptu resetującego bazę.
