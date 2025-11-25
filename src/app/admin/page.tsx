@@ -317,14 +317,14 @@ interface OrderFormProps {
 const OrderForm = ({ orderFormData, handleOrderInputChange, handleOrderSubmit, loading, order }: OrderFormProps) => (
   <form onSubmit={handleOrderSubmit} className="space-y-4">
     <div className="grid gap-4 py-4">
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="status" className="text-right">Status</Label>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="status">Status</Label>
         <select
           id="status"
           name="status"
           value={orderFormData.status}
           onChange={handleOrderInputChange}
-          className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           required
         >
           <option value="PENDING">Oczekujące (PENDING)</option>
@@ -333,17 +333,17 @@ const OrderForm = ({ orderFormData, handleOrderInputChange, handleOrderSubmit, l
           <option value="CANCELED">Anulowane (CANCELED)</option>
         </select>
       </div>
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="address" className="text-right">Adres</Label>
-        <Textarea id="address" name="address" value={orderFormData.address} onChange={handleOrderInputChange} className="col-span-3" required />
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="address">Adres</Label>
+        <Textarea id="address" name="address" value={orderFormData.address} onChange={handleOrderInputChange} className="min-h-[150px]" required />
       </div>
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="shippedAt" className="text-right">Data wysyłki</Label>
-        <Input id="shippedAt" name="shippedAt" type="datetime-local" value={orderFormData.shippedAt} onChange={handleOrderInputChange} className="col-span-3" />
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="shippedAt">Data wysyłki</Label>
+        <Input id="shippedAt" name="shippedAt" type="datetime-local" value={orderFormData.shippedAt} onChange={handleOrderInputChange} />
       </div>
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="deliveredAt" className="text-right">Data dostarczenia</Label>
-        <Input id="deliveredAt" name="deliveredAt" type="datetime-local" value={orderFormData.deliveredAt} onChange={handleOrderInputChange} className="col-span-3" />
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="deliveredAt">Data dostarczenia</Label>
+        <Input id="deliveredAt" name="deliveredAt" type="datetime-local" value={orderFormData.deliveredAt} onChange={handleOrderInputChange} />
       </div>
       
       {order && order.items && (
@@ -1022,7 +1022,7 @@ export default function AdminPage() {
         </Dialog>
 
         <Dialog open={isEditOrderDialogOpen} onOpenChange={setIsEditOrderDialogOpen}>
-          <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-[1200px] max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Edytuj zamówienie</DialogTitle>
               <DialogDescription>
