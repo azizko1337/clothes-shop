@@ -828,7 +828,7 @@ export default function AdminPage() {
   }, [formData.modelUrl]);
 
   return (
-    <div className="min-h-screen bg-gray-50/50 p-8">
+    <div className="min-h-screen bg-zinc-950 p-8">
       {isInitialLoading ? (
         <div className="flex h-[80vh] items-center justify-center">
           <Spinner size={48} />
