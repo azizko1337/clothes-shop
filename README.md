@@ -28,6 +28,8 @@ Aby uruchomić aplikację w trybie produkcyjnym:
 docker compose up --build -d
 ```
 
+Przed uruchomieniem musi istnieć plik bazy danych! Można to uzyskać np. przy pomocy skryptu resetującego bazę.
+
 Aplikacja będzie dostępna pod adresem `http://localhost:3000`.
 
 ### Migracje i Seedowanie w Dockerze
