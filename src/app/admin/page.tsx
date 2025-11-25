@@ -102,6 +102,14 @@ const initialCollectionFormData: CollectionFormData = {
   releaseDate: '',
 };
 
+interface OrderItem {
+  id: number;
+  quantity: number;
+  size: string | null;
+  price: number;
+  product: Product;
+}
+
 interface Order {
   id: number;
   address: string;
@@ -111,7 +119,7 @@ interface Order {
   deliveredAt?: string;
   totalProductsPrice: number;
   deliveryPrice: number;
-  products: Product[];
+  items: OrderItem[];
 }
 
 interface OrderFormData {
@@ -303,9 +311,10 @@ interface OrderFormProps {
   handleOrderInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   handleOrderSubmit: (e: React.FormEvent) => void;
   loading: boolean;
+  order?: Order;
 }
 
-const OrderForm = ({ orderFormData, handleOrderInputChange, handleOrderSubmit, loading }: OrderFormProps) => (
+const OrderForm = ({ orderFormData, handleOrderInputChange, handleOrderSubmit, loading, order }: OrderFormProps) => (
   <form onSubmit={handleOrderSubmit} className="space-y-4">
     <div className="grid gap-4 py-4">
       <div className="grid grid-cols-4 items-center gap-4">
@@ -336,6 +345,32 @@ const OrderForm = ({ orderFormData, handleOrderInputChange, handleOrderSubmit, l
         <Label htmlFor="deliveredAt" className="text-right">Data dostarczenia</Label>
         <Input id="deliveredAt" name="deliveredAt" type="datetime-local" value={orderFormData.deliveredAt} onChange={handleOrderInputChange} className="col-span-3" />
       </div>
+      
+      {order && order.items && (
+        <div className="col-span-4 border rounded-md p-4 mt-4">
+          <h3 className="font-semibold mb-2">Zamówione produkty</h3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Produkt</TableHead>
+                <TableHead>Rozmiar</TableHead>
+                <TableHead>Ilość</TableHead>
+                <TableHead>Cena</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {order.items.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.product.name}</TableCell>
+                  <TableCell>{item.size || '-'}</TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>{item.price.toFixed(2)} zł</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
     <DialogFooter>
       <Button type="submit" disabled={loading}>
@@ -999,6 +1034,7 @@ export default function AdminPage() {
               handleOrderInputChange={handleOrderInputChange}
               handleOrderSubmit={handleOrderSubmit}
               loading={loading}
+              order={orders.find(o => o.id === editingOrderId)}
             />
           </DialogContent>
         </Dialog>
