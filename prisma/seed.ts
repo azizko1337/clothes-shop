@@ -102,9 +102,14 @@ async function main() {
 
         let modelData = null;
         let modelMimeType = null;
+        let glbAttribution = null;
+        let glbLink = null;
+
         if (modelFile) {
             modelData = fs.readFileSync(path.join(productPath, modelFile));
             modelMimeType = modelFile.endsWith('.glb') ? 'model/gltf-binary' : 'model/gltf+json';
+            glbAttribution = "Modele 3D autorstwa TsaphnatSpiderMbuyi oraz striderrotk";
+            glbLink = "https://sketchfab.com";
         }
 
         const sizes = isCd ? [] : ['S', 'M', 'L', 'XL'];
@@ -123,7 +128,9 @@ async function main() {
                     create: imagesData
                 },
                 modelData: modelData,
-                modelMimeType: modelMimeType
+                modelMimeType: modelMimeType,
+                glbAttribution: glbAttribution,
+                glbLink: glbLink
             }
         });
         console.log(`Created product: ${product.name}`);
